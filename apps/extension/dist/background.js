@@ -1,0 +1,1 @@
+console.log("[Job Intelligence Collector] Background worker initialized.");chrome.runtime.onInstalled.addListener(e=>{e.reason===chrome.runtime.OnInstalledReason.INSTALL&&(console.log("[Job Intelligence Collector] Opening dashboard on first install."),chrome.tabs.create({url:chrome.runtime.getURL("dashboard.html")}))});

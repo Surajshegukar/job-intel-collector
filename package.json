@@ -1,31 +1,18 @@
 {
-  "name": "job-intelligence-collector",
+  "name": "jobx-monorepo",
   "version": "1.0.0",
-  "description": "Chrome Extension to collect and organize jobs, companies, posts, and recruiters.",
-  "main": "index.js",
+  "private": true,
+  "packageManager": "npm@10.8.2",
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "dexie": "^4.0.10",
-    "dexie-react-hooks": "^1.1.7",
-    "lucide-react": "^0.395.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "start": "turbo start",
+    "seed": "turbo seed"
   },
   "devDependencies": {
-    "@types/chrome": "^0.0.268",
-    "@types/jsdom": "^28.0.3",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.1",
-    "autoprefixer": "^10.4.19",
-    "jsdom": "^29.1.1",
-    "postcss": "^8.4.38",
-    "tailwindcss": "^3.4.4",
-    "typescript": "^5.4.5",
-    "vite": "^5.3.1"
+    "turbo": "^2.0.4"
   }
 }
