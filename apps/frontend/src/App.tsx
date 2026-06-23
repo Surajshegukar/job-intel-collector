@@ -9,6 +9,8 @@ import Companies from './pages/Companies';
 import Skills from './pages/Skills';
 import Tracker from './pages/Tracker';
 import Profile from './pages/Profile';
+import ResumeBuilder from './pages/ResumeBuilder';
+import ResumeVersions from './pages/ResumeVersions';
 import AIMonitoring from './pages/AIMonitoring';
 
 function DashboardLayout() {
@@ -58,6 +60,8 @@ export default function App() {
           <Route path="/skills"        element={<Skills />} />
           <Route path="/tracker"       element={<Tracker />} />
           <Route path="/profile"       element={<Profile />} />
+          <Route path="/resume-builder" element={<ResumeBuilder />} />
+          <Route path="/resume-versions" element={<ResumeVersions />} />
           <Route path="/ai-monitoring" element={<AIMonitoring />} />
         </Route>
         <Route path="*" element={<Navigate to="/overview" replace />} />

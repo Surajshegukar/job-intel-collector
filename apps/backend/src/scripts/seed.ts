@@ -6,6 +6,7 @@ import { Job } from '../models/Job';
 import { Skill } from '../models/Skill';
 import { Application } from '../models/Application';
 import { HiringPost } from '../models/HiringPost';
+import { ResumeTemplate } from '../models/ResumeTemplate';
 import { JobProcessingService } from '../services/JobProcessingService';
 
 const MOCK_COMPANIES = [
@@ -228,6 +229,199 @@ async function seed() {
     console.log(`Successfully seeded. Total skills resolved/created: ${allSkills.length}`);
     console.log('Top skills seeded:');
     allSkills.slice(0, 5).forEach(s => console.log(` - ${s.name}: ${s.frequency} jobs`));
+
+    console.log('Seeding resume templates...');
+    await ResumeTemplate.deleteMany({});
+    await ResumeTemplate.insertMany([
+      {
+        name: 'ATS Standard',
+        type: 'ats',
+        htmlTemplate: `<div class="ats-resume">
+  <div class="header">
+    <h1>{{name}}</h1>
+    <div class="contact-info">
+      {{email}} | {{phone}} | {{location}} <br/>
+      {{linkedinUrl}} | {{githubUrl}} | {{portfolioUrl}}
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Professional Summary</div>
+    <div class="section-content">{{summary}}</div>
+  </div>
+  <div class="section">
+    <div class="section-title">Core Skills</div>
+    <div class="section-content skills-list">{{skills}}</div>
+  </div>
+  <div class="section">
+    <div class="section-title">Professional Experience</div>
+    <div class="section-content">{{experiences}}</div>
+  </div>
+  <div class="section">
+    <div class="section-title">Personal Projects</div>
+    <div class="section-content">{{projects}}</div>
+  </div>
+  <div class="section">
+    <div class="section-title">Education</div>
+    <div class="section-content">{{education}}</div>
+  </div>
+  <div class="section">
+    <div class="section-title">Certifications & Achievements</div>
+    <div class="section-content">{{certifications}} {{achievements}}</div>
+  </div>
+</div>`,
+        cssTemplate: `.ats-resume { font-family: "Times New Roman", Times, serif; color: #000000; line-height: 1.35; padding: 25px; max-width: 800px; margin: 0 auto; background: #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+.ats-resume h1 { text-align: center; font-size: 16pt; margin: 0 0 4px 0; font-weight: bold; text-transform: uppercase; }
+.ats-resume .contact-info { text-align: center; font-size: 9.5pt; margin-bottom: 12px; color: #333333; }
+.ats-resume .section { margin-bottom: 14px; }
+.ats-resume .section-title { font-size: 11pt; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #000000; margin-bottom: 4px; padding-bottom: 1px; }
+.ats-resume .section-content { font-size: 10pt; text-align: justify; }
+.ats-resume .skills-list { font-weight: 500; }
+.ats-resume .item-header { display: flex; justify-content: space-between; font-weight: bold; font-size: 10pt; margin-top: 6px; }
+.ats-resume .item-sub { display: flex; justify-content: space-between; font-style: italic; font-size: 9.5pt; margin-bottom: 3px; }
+.ats-resume ul { margin: 2px 0 6px 18px; padding: 0; }
+.ats-resume li { font-size: 9.5pt; margin-bottom: 2px; }`
+      },
+      {
+        name: 'Modern Accent',
+        type: 'modern',
+        htmlTemplate: `<div class="modern-resume">
+  <div class="header">
+    <div class="name-title">
+      <h1>{{name}}</h1>
+      <p class="summary-highlight">{{summary}}</p>
+    </div>
+    <div class="contact-sidebar">
+      <div>{{email}}</div>
+      <div>{{phone}}</div>
+      <div>{{location}}</div>
+      <div>{{linkedinUrl}}</div>
+      <div>{{githubUrl}}</div>
+    </div>
+  </div>
+  <div class="main-layout">
+    <div class="left-col">
+      <div class="section">
+        <h2 class="title">Skills</h2>
+        <div class="skills-grid">{{skills}}</div>
+      </div>
+      <div class="section">
+        <h2 class="title">Education</h2>
+        {{education}}
+      </div>
+      <div class="section">
+        <h2 class="title">Certifications</h2>
+        {{certifications}}
+      </div>
+    </div>
+    <div class="right-col">
+      <div class="section">
+        <h2 class="title">Experience</h2>
+        {{experiences}}
+      </div>
+      <div class="section">
+        <h2 class="title">Projects</h2>
+        {{projects}}
+      </div>
+    </div>
+  </div>
+</div>`,
+        cssTemplate: `.modern-resume { font-family: "Inter", sans-serif; color: #1f2937; line-height: 1.4; padding: 30px; background: #ffffff; max-width: 800px; margin: 0 auto; }
+.modern-resume .header { display: flex; justify-content: space-between; border-bottom: 2px solid #6366f1; padding-bottom: 15px; margin-bottom: 20px; }
+.modern-resume h1 { font-size: 22pt; font-weight: 800; color: #111827; margin: 0; tracking: -0.025em; }
+.modern-resume .summary-highlight { font-size: 9.5pt; color: #4b5563; margin-top: 5px; max-width: 500px; }
+.modern-resume .contact-sidebar { text-align: right; font-size: 8.5pt; color: #4b5563; display: flex; flex-direction: column; justify-content: center; }
+.modern-resume .main-layout { display: grid; grid-template-columns: 4fr 8fr; gap: 20px; }
+.modern-resume .title { font-size: 11pt; font-weight: 700; text-transform: uppercase; color: #4f46e5; border-left: 3px solid #6366f1; padding-left: 8px; margin: 0 0 10px 0; }
+.modern-resume .section { margin-bottom: 18px; }
+.modern-resume .skills-grid { font-size: 8.5pt; font-weight: 600; display: flex; flex-wrap: wrap; gap: 4px; }
+.modern-resume .item-header { font-weight: 700; font-size: 9.5pt; color: #111827; display: flex; justify-content: space-between; margin-top: 6px; }
+.modern-resume .item-sub { font-size: 8.5pt; color: #4b5563; font-weight: 500; display: flex; justify-content: space-between; }
+.modern-resume ul { margin: 4px 0 8px 14px; padding: 0; }
+.modern-resume li { font-size: 8.5pt; color: #374151; margin-bottom: 3px; }`
+      },
+      {
+        name: 'Minimal Clean',
+        type: 'minimal',
+        htmlTemplate: `<div class="minimal-resume">
+  <div class="header">
+    <h1>{{name}}</h1>
+    <p class="contacts">{{email}} · {{phone}} · {{location}}</p>
+    <p class="links">{{linkedinUrl}} · {{githubUrl}} · {{portfolioUrl}}</p>
+  </div>
+  <hr class="divider"/>
+  <div class="section">
+    <h2>Summary</h2>
+    <p class="summary-text">{{summary}}</p>
+  </div>
+  <div class="section">
+    <h2>Experience</h2>
+    {{experiences}}
+  </div>
+  <div class="section">
+    <h2>Projects</h2>
+    {{projects}}
+  </div>
+  <div class="section">
+    <h2>Skills</h2>
+    <div class="skills-block">{{skills}}</div>
+  </div>
+  <div class="section">
+    <h2>Education</h2>
+    {{education}}
+  </div>
+</div>`,
+        cssTemplate: `.minimal-resume { font-family: "Segoe UI", Arial, sans-serif; color: #333333; line-height: 1.5; padding: 30px; max-width: 800px; margin: 0 auto; }
+.minimal-resume h1 { text-align: center; font-size: 20pt; font-weight: 300; letter-spacing: 1px; color: #111; margin: 0; }
+.minimal-resume .contacts, .minimal-resume .links { text-align: center; font-size: 9pt; color: #666; margin: 3px 0; }
+.minimal-resume .divider { border: 0; border-top: 1px solid #eee; margin: 15px 0; }
+.minimal-resume h2 { font-size: 11pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #eaeaea; padding-bottom: 3px; margin: 15px 0 8px 0; color: #222; }
+.minimal-resume .summary-text { font-size: 9.5pt; text-align: justify; }
+.minimal-resume .item-header { display: flex; justify-content: space-between; font-weight: 600; font-size: 9.5pt; margin-top: 5px; }
+.minimal-resume .item-sub { display: flex; justify-content: space-between; font-size: 8.5pt; color: #777; margin-bottom: 2px; }
+.minimal-resume ul { margin: 3px 0 6px 15px; padding: 0; }
+.minimal-resume li { font-size: 9pt; margin-bottom: 3px; color: #444; }
+.minimal-resume .skills-block { font-size: 9pt; word-spacing: 2px; }`
+      },
+      {
+        name: 'FAANG Technical',
+        type: 'faang',
+        htmlTemplate: `<div class="faang-resume">
+  <div class="header">
+    <h1>{{name}}</h1>
+    <p>{{email}} | {{phone}} | {{location}} | {{linkedinUrl}} | {{githubUrl}}</p>
+  </div>
+  <div class="section">
+    <h2>Education</h2>
+    {{education}}
+  </div>
+  <div class="section">
+    <h2>Skills</h2>
+    {{skills}}
+  </div>
+  <div class="section">
+    <h2>Experience</h2>
+    {{experiences}}
+  </div>
+  <div class="section">
+    <h2>Projects</h2>
+    {{projects}}
+  </div>
+  <div class="section">
+    <h2>Certifications</h2>
+    {{certifications}}
+  </div>
+</div>`,
+        cssTemplate: `.faang-resume { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 10pt; color: #111; line-height: 1.25; padding: 20px; max-width: 800px; margin: 0 auto; }
+.faang-resume h1 { text-align: center; font-size: 18pt; font-weight: bold; margin: 0 0 2px 0; }
+.faang-resume .header p { text-align: center; font-size: 8.5pt; margin: 0 0 10px 0; }
+.faang-resume h2 { font-size: 10.5pt; font-weight: bold; text-transform: uppercase; border-bottom: 1.5px solid #111; margin-top: 10px; margin-bottom: 3px; }
+.faang-resume .item-header { font-weight: bold; display: flex; justify-content: space-between; margin-top: 4px; }
+.faang-resume .item-sub { display: flex; justify-content: space-between; font-size: 9pt; }
+.faang-resume ul { margin: 2px 0 4px 15px; padding: 0; }
+.faang-resume li { font-size: 9pt; margin-bottom: 1.5px; }`
+      }
+    ]);
+    console.log('Seeded 4 resume templates.');
 
     console.log('\nDatabase Seeding Completed Successfully! 🌱');
     process.exit(0);

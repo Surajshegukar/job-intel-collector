@@ -9,6 +9,7 @@ const UserAchievementSchema = new Schema({
   credentialId: { type: String },
   url: { type: String },
   description: { type: String },
+  category: { type: String }, // e.g. Award, Honor, Project Milestones
   type: { type: String, enum: ['certification', 'award', 'publication', 'other'], default: 'certification' }
 }, {
   timestamps: true

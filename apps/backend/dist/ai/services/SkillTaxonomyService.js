@@ -53,20 +53,34 @@ class SkillTaxonomyService {
         'Angular': 'Frontend',
         'Tailwind CSS': 'Frontend',
         'Next.js': 'Frontend',
-        'JavaScript': 'Languages',
-        'TypeScript': 'Languages',
-        'Python': 'Languages',
-        'Go': 'Languages',
+        'HTML': 'Frontend',
+        'CSS': 'Frontend',
+        'JavaScript': 'Backend',
+        'TypeScript': 'Backend',
+        'Python': 'Backend',
+        'Go': 'Backend',
         'Node.js': 'Backend',
         'Express': 'Backend',
-        'MongoDB': 'Databases',
-        'PostgreSQL': 'Databases',
-        'MySQL': 'Databases',
-        'Redis': 'Databases',
-        'AWS': 'Cloud/DevOps',
-        'GCP': 'Cloud/DevOps',
-        'Docker': 'Cloud/DevOps',
-        'Kubernetes': 'Cloud/DevOps'
+        'Ruby': 'Backend',
+        'PHP': 'Backend',
+        'MongoDB': 'Database',
+        'PostgreSQL': 'Database',
+        'MySQL': 'Database',
+        'Redis': 'Database',
+        'AWS': 'Cloud',
+        'GCP': 'Cloud',
+        'Docker': 'DevOps',
+        'Kubernetes': 'DevOps',
+        'Git': 'DevOps',
+        'Jest': 'Testing',
+        'Cypress': 'Testing',
+        'React Native': 'Mobile',
+        'Flutter': 'Mobile',
+        'TensorFlow': 'AI/ML',
+        'PyTorch': 'AI/ML',
+        'Large Language Models': 'AI/ML',
+        'RAG': 'AI/ML',
+        'Machine Learning': 'AI/ML'
     };
     /**
      * Normalize a skill name string to its canonical form.
@@ -94,7 +108,7 @@ class SkillTaxonomyService {
      * Get the category of a normalized skill name.
      */
     static getCategory(normalizedSkillName) {
-        return this.CATEGORY_MAP[normalizedSkillName] || 'Other';
+        return this.CATEGORY_MAP[normalizedSkillName] || 'General';
     }
 }
 exports.SkillTaxonomyService = SkillTaxonomyService;

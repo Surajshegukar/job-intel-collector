@@ -13,8 +13,12 @@ const UserProfileSchema = new mongoose_1.Schema({
         max: { type: Number },
         currency: { type: String, default: 'USD' }
     },
+    phone: { type: String },
+    location: { type: String },
+    linkedinUrl: { type: String },
     githubUrl: { type: String },
-    linkedinUrl: { type: String }
+    portfolioUrl: { type: String },
+    summary: { type: String }
 }, {
     timestamps: true
 });
