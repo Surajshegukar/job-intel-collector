@@ -112,3 +112,69 @@ export interface PaginatedJobs {
   pages: number;
   total: number;
 }
+
+export interface JobAnalysis {
+  _id: string;
+  jobId: string;
+  userId: string;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  error?: string;
+  matchScore: number;
+  scoreBreakdown: {
+    skillsScore: number;
+    projectsScore: number;
+    experienceScore: number;
+    certificationScore: number;
+  };
+  scoreExplanation: string;
+  roleCategory: string;
+  seniority: string;
+  experienceRequired?: string;
+  salaryEstimate?: string;
+  hiringUrgency: 'high' | 'medium' | 'low' | 'unknown';
+  referralAvailable: boolean;
+  recruiterMentioned: boolean;
+  applicationPriority: 'high' | 'medium' | 'low';
+  extractedSkills: string[];
+  missingSkills: string[];
+  recommendedProjects: string[];
+  recommendedResumeSections: string[];
+  interviewTopics?: string[];
+  interviewQuestions?: {
+    question: string;
+    suggestedAnswer: string;
+    topic: string;
+    difficulty: 'easy' | 'medium' | 'hard';
+  }[];
+  companyInsights: string[];
+  aiProvider: string;
+  analysisVersion: string;
+  processingStartedAt?: string;
+  processingCompletedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AIMetrics {
+  queues: {
+    completed: number;
+    failed: number;
+    processing: number;
+    pending: number;
+  };
+  telemetry: {
+    avgLatencyMs: number;
+    totalCostUSD: number;
+    totalTokensUsed: number;
+  };
+  providers: {
+    name: string;
+    count: number;
+    avgLatencyMs: number;
+  }[];
+  accuracy: {
+    outcome: string;
+    avgMatchScore: number;
+    count: number;
+  }[];
+}

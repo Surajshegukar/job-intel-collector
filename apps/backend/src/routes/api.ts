@@ -6,6 +6,9 @@ import * as skillsController from '../controllers/skillsController';
 import * as applicationsController from '../controllers/applicationsController';
 import * as analyticsController from '../controllers/analyticsController';
 import * as hiringPostsController from '../controllers/hiringPostsController';
+import * as analysisController from '../controllers/analysisController';
+import * as profileController from '../controllers/profileController';
+import * as telemetryController from '../controllers/telemetryController';
 import { authMiddleware } from '../middleware/auth';
 
 const router = Router();
@@ -54,5 +57,23 @@ router.get('/analytics/top-skills', authMiddleware, analyticsController.getTopSk
 router.get('/analytics/top-companies', authMiddleware, analyticsController.getTopCompanies);
 router.get('/analytics/locations', authMiddleware, analyticsController.getLocations);
 router.get('/analytics/salary-ranges', authMiddleware, analyticsController.getSalaryRanges);
+
+// ─── AI Analysis Endpoints ───────────────────────────────────────────────────
+router.get('/jobs/:id/analysis', authMiddleware, analysisController.getAnalysis);
+router.post('/jobs/:id/analyze', authMiddleware, analysisController.triggerAnalysis);
+router.get('/jobs/:id/match', authMiddleware, analysisController.getMatchDetails);
+router.get('/jobs/:id/interview-prep', authMiddleware, analysisController.getInterviewPrep);
+
+// ─── Career Profile Endpoints ─────────────────────────────────────────────────
+router.get('/profile', authMiddleware, profileController.getProfileData);
+router.put('/profile', authMiddleware, profileController.updateProfileData);
+router.post('/profile/skills', authMiddleware, profileController.addSkill);
+router.post('/profile/projects', authMiddleware, profileController.addProject);
+router.post('/profile/resume-version', authMiddleware, profileController.uploadResumeVersion);
+
+// ─── Telemetry & Tuning Endpoints ─────────────────────────────────────────────
+router.post('/analysis/feedback', authMiddleware, telemetryController.submitFeedback);
+router.get('/ai/metrics', authMiddleware, telemetryController.getMetrics);
+router.get('/ai/export', authMiddleware, telemetryController.exportTrainingData);
 
 export default router;

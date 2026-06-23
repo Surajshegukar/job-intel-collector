@@ -41,6 +41,9 @@ const skillsController = __importStar(require("../controllers/skillsController")
 const applicationsController = __importStar(require("../controllers/applicationsController"));
 const analyticsController = __importStar(require("../controllers/analyticsController"));
 const hiringPostsController = __importStar(require("../controllers/hiringPostsController"));
+const analysisController = __importStar(require("../controllers/analysisController"));
+const profileController = __importStar(require("../controllers/profileController"));
+const telemetryController = __importStar(require("../controllers/telemetryController"));
 const auth_1 = require("../middleware/auth");
 const router = (0, express_1.Router)();
 // Health check
@@ -79,4 +82,19 @@ router.get('/analytics/top-skills', auth_1.authMiddleware, analyticsController.g
 router.get('/analytics/top-companies', auth_1.authMiddleware, analyticsController.getTopCompanies);
 router.get('/analytics/locations', auth_1.authMiddleware, analyticsController.getLocations);
 router.get('/analytics/salary-ranges', auth_1.authMiddleware, analyticsController.getSalaryRanges);
+// ─── AI Analysis Endpoints ───────────────────────────────────────────────────
+router.get('/jobs/:id/analysis', auth_1.authMiddleware, analysisController.getAnalysis);
+router.post('/jobs/:id/analyze', auth_1.authMiddleware, analysisController.triggerAnalysis);
+router.get('/jobs/:id/match', auth_1.authMiddleware, analysisController.getMatchDetails);
+router.get('/jobs/:id/interview-prep', auth_1.authMiddleware, analysisController.getInterviewPrep);
+// ─── Career Profile Endpoints ─────────────────────────────────────────────────
+router.get('/profile', auth_1.authMiddleware, profileController.getProfileData);
+router.put('/profile', auth_1.authMiddleware, profileController.updateProfileData);
+router.post('/profile/skills', auth_1.authMiddleware, profileController.addSkill);
+router.post('/profile/projects', auth_1.authMiddleware, profileController.addProject);
+router.post('/profile/resume-version', auth_1.authMiddleware, profileController.uploadResumeVersion);
+// ─── Telemetry & Tuning Endpoints ─────────────────────────────────────────────
+router.post('/analysis/feedback', auth_1.authMiddleware, telemetryController.submitFeedback);
+router.get('/ai/metrics', auth_1.authMiddleware, telemetryController.getMetrics);
+router.get('/ai/export', auth_1.authMiddleware, telemetryController.exportTrainingData);
 exports.default = router;

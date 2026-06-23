@@ -9,6 +9,7 @@ import Companies from './pages/Companies';
 import Skills from './pages/Skills';
 import Tracker from './pages/Tracker';
 import Profile from './pages/Profile';
+import AIMonitoring from './pages/AIMonitoring';
 
 function DashboardLayout() {
   return (
@@ -51,12 +52,13 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<RequireGuest />} />
         <Route element={<RequireAuth />}>
-          <Route path="/overview"   element={<Overview />} />
-          <Route path="/jobs"       element={<Jobs />} />
-          <Route path="/companies"  element={<Companies />} />
-          <Route path="/skills"     element={<Skills />} />
-          <Route path="/tracker"    element={<Tracker />} />
-          <Route path="/profile"    element={<Profile />} />
+          <Route path="/overview"      element={<Overview />} />
+          <Route path="/jobs"          element={<Jobs />} />
+          <Route path="/companies"     element={<Companies />} />
+          <Route path="/skills"        element={<Skills />} />
+          <Route path="/tracker"       element={<Tracker />} />
+          <Route path="/profile"       element={<Profile />} />
+          <Route path="/ai-monitoring" element={<AIMonitoring />} />
         </Route>
         <Route path="*" element={<Navigate to="/overview" replace />} />
       </Routes>

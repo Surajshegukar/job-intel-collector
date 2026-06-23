@@ -5,12 +5,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("./app"));
 const db_1 = require("./config/db");
+const AnalysisQueue_1 = require("./ai/services/AnalysisQueue");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const PORT = process.env.PORT || 5000;
 async function startServer() {
     // Connect to Database
     await (0, db_1.connectDB)();
+    // Initialize Background Queue System
+    await AnalysisQueue_1.AnalysisQueue.initialize();
     // Start Express listener
     app_1.default.listen(PORT, () => {
         console.log(`Job Intelligence Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);

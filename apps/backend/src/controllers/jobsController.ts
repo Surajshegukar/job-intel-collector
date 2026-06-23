@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { Job } from '../models/Job';
 import { JobProcessingService } from '../services/JobProcessingService';
+import { AnalysisQueue } from '../ai/services/AnalysisQueue';
+import { AuthenticatedRequest } from '../middleware/auth';
 
 export const getJobs = async (req: Request, res: Response) => {
   try {
@@ -68,6 +70,13 @@ export const getJobById = async (req: Request, res: Response) => {
 export const createJob = async (req: Request, res: Response) => {
   try {
     const result = await JobProcessingService.processAndSaveJob(req.body);
+    
+    // Trigger background AI Analysis
+    const userId = (req as AuthenticatedRequest).user?.id;
+    if (userId) {
+      await AnalysisQueue.addJob(result.job._id.toString(), userId);
+    }
+
     const jobWithCompany = await Job.findById(result.job._id).populate('companyId');
     return res.status(201).json({
       message: `Job ${result.action} successfully`,
@@ -89,6 +98,11 @@ export const updateJob = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Job not found' });
     }
 
+    let needsReanalysis = false;
+    if (description !== undefined && description !== job.description) {
+      needsReanalysis = true;
+    }
+
     if (title) job.title = title;
     if (location !== undefined) job.location = location;
     if (salary !== undefined) job.salary = salary;
@@ -98,6 +112,12 @@ export const updateJob = async (req: Request, res: Response) => {
     if (status) job.status = status;
 
     await job.save();
+
+    // Trigger AI analysis if description changes
+    const userId = (req as AuthenticatedRequest).user?.id;
+    if (needsReanalysis && userId) {
+      await AnalysisQueue.addJob(job._id.toString(), userId);
+    }
 
     const jobWithCompany = await Job.findById(job._id).populate('companyId');
     return res.json(jobWithCompany);

@@ -1,5 +1,6 @@
 import app from './app';
 import { connectDB } from './config/db';
+import { AnalysisQueue } from './ai/services/AnalysisQueue';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -9,6 +10,9 @@ const PORT = process.env.PORT || 5000;
 async function startServer() {
   // Connect to Database
   await connectDB();
+
+  // Initialize Background Queue System
+  await AnalysisQueue.initialize();
 
   // Start Express listener
   app.listen(PORT, () => {
