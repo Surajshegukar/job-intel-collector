@@ -35,22 +35,55 @@ Built with **React**, **TypeScript**, **Vite**, and **TailwindCSS**, the extensi
 ## Project Structure
 
 ```
-├── dist/                      # Compiled production-ready extension (generated on build)
-├── public/                    # Static assets & icons
-│   └── manifest.json          # Chrome Extension Manifest V3 configuration
-├── samples/                   # Mock HTML DOM snapshots for local testing
-├── scratch/                   # Local parser scripts and integration tests
-├── src/
-│   ├── background/            # MV3 background worker
-│   ├── content/               # DOM injector and event listener script
-│   ├── dashboard/             # Console Dashboard app (React/Dexie)
-│   ├── popup/                 # Ext Action Popover form (React/Dexie)
-│   ├── parsers/               # Parsing Strategy pattern implementations
-│   ├── storage/               # Dexie DB instance, schemas, and CRUD services
-│   ├── types/                 # Strict TypeScript contracts and models
-│   └── utils/                 # Regex helpers, clean utilities, and export engines
-├── package.json
-└── vite.config.ts
+jobx/                              ← Monorepo root
+├── extension/                     ← Chrome Extension (MV3)
+│   ├── public/                    ← manifest.json & icons
+│   ├── src/
+│   │   ├── background/            ← MV3 service worker
+│   │   ├── content/               ← DOM injector & event listener
+│   │   ├── dashboard/             ← Options page (React/Dexie)
+│   │   ├── popup/                 ← Action popup (React/Dexie)
+│   │   ├── parsers/               ← Site-specific scraper strategies
+│   │   ├── storage/               ← Dexie IndexedDB services
+│   │   ├── types/                 ← TypeScript contracts
+│   │   └── utils/                 ← Helpers & export engine
+│   ├── dist/                      ← Compiled extension (load in Chrome)
+│   ├── samples/                   ← HTML mock DOM snapshots for testing
+│   ├── scratch/                   ← Local parser integration scripts
+│   ├── popup.html
+│   ├── dashboard.html
+│   ├── package.json
+│   ├── tailwind.config.js
+│   ├── tsconfig.json
+│   └── vite.config.ts
+│
+├── backend/                       ← Job Intelligence API Server
+│   ├── src/
+│   │   ├── config/                ← MongoDB connection
+│   │   ├── models/                ← Mongoose schemas (Job, Company, Skill…)
+│   │   ├── controllers/           ← Route handlers
+│   │   ├── middleware/            ← JWT auth guard
+│   │   ├── routes/                ← Express router
+│   │   ├── services/              ← Business logic & AI placeholders
+│   │   └── scripts/               ← Database seeder
+│   ├── .env
+│   ├── package.json
+│   └── tsconfig.json
+│
+├── frontend/                      ← Dashboard SPA (React + Vite)
+│   ├── src/
+│   │   ├── api/                   ← Axios client & React Query hooks
+│   │   ├── components/            ← Sidebar, MetricCard…
+│   │   ├── pages/                 ← Overview, Jobs, Companies, Skills, Tracker, Profile
+│   │   ├── store/                 ← Zustand auth store
+│   │   └── types/                 ← Domain TypeScript interfaces
+│   ├── index.html
+│   ├── package.json
+│   ├── tailwind.config.js
+│   └── vite.config.ts
+│
+├── .gitignore
+└── README.md
 ```
 
 ---
@@ -77,48 +110,37 @@ applications: 'id, jobId, status, createdAt'
 
 Make sure you have [Node.js](https://nodejs.org/) installed (v18+ recommended).
 
-### 1. Installation
-
-Clone the repository and install the dependencies:
+### Chrome Extension
 
 ```bash
+cd extension
 npm install
-```
 
-### 2. Run Local Parser Integration Tests
-
-Verify that all strategy scrapers work correctly on the static HTML mock samples inside the `scratch/` folder:
-
-```bash
-# Run Indeed & LinkedIn job parser tests
+# Run parser integration tests
 node scratch/test_indeed_parser.js
 node scratch/test_linkedin_parser.js
 
-# Run LinkedIn post & company page parser tests
-node scratch/test_linkedin_post_improved.js
-node scratch/test_linkedin_company.js
-
-# Run all parser integration checks
-node scratch/test_parsers_improved.js
-```
-
-### 3. Build the Extension
-
-Compile the React components and bundle the background/content scripts into the `dist/` directory:
-
-```bash
+# Build the extension
 npm run build
 ```
 
----
+Load `extension/dist/` in Chrome via `chrome://extensions` → **Load unpacked**.
 
-## Installation in Chrome
+### Backend API Server
 
-To load and use the compiled extension in Google Chrome:
+```bash
+cd backend
+npm install
+npm run seed   # Seed MongoDB Atlas with sample data
+npm run dev    # Starts on http://localhost:5000
+```
 
-1. Open Google Chrome.
-2. Navigate to **`chrome://extensions/`**.
-3. Enable **Developer mode** by toggling the switch in the top-right corner.
-4. Click the **Load unpacked** button in the top-left corner.
-5. Select the **`dist/`** directory located in the project's root folder.
-6. The **Job Intelligence Collector** icon will now appear in your browser toolbar!
+### Frontend Dashboard
+
+```bash
+cd frontend
+npm install
+npm run dev    # Starts on http://localhost:5173
+```
+
+Open **http://localhost:5173** → login with `suraj@example.com` / `password123`
