@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteJob = exports.updateJob = exports.createJob = exports.getJobById = exports.getJobs = void 0;
 const Job_1 = require("../models/Job");
 const JobProcessingService_1 = require("../services/JobProcessingService");
+const AnalysisQueue_1 = require("../ai/services/AnalysisQueue");
 const getJobs = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -63,6 +64,11 @@ exports.getJobById = getJobById;
 const createJob = async (req, res) => {
     try {
         const result = await JobProcessingService_1.JobProcessingService.processAndSaveJob(req.body);
+        // Trigger background AI Analysis
+        const userId = req.user?.id;
+        if (userId) {
+            await AnalysisQueue_1.AnalysisQueue.addJob(result.job._id.toString(), userId);
+        }
         const jobWithCompany = await Job_1.Job.findById(result.job._id).populate('companyId');
         return res.status(201).json({
             message: `Job ${result.action} successfully`,
@@ -83,6 +89,10 @@ const updateJob = async (req, res) => {
         if (!job) {
             return res.status(404).json({ message: 'Job not found' });
         }
+        let needsReanalysis = false;
+        if (description !== undefined && description !== job.description) {
+            needsReanalysis = true;
+        }
         if (title)
             job.title = title;
         if (location !== undefined)
@@ -98,6 +108,11 @@ const updateJob = async (req, res) => {
         if (status)
             job.status = status;
         await job.save();
+        // Trigger AI analysis if description changes
+        const userId = req.user?.id;
+        if (needsReanalysis && userId) {
+            await AnalysisQueue_1.AnalysisQueue.addJob(job._id.toString(), userId);
+        }
         const jobWithCompany = await Job_1.Job.findById(job._id).populate('companyId');
         return res.json(jobWithCompany);
     }

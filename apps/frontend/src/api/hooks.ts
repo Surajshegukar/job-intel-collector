@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from './client';
 import type {
   PaginatedJobs, Job, Company, Skill, Application,
-  OverviewStats, ApplicationStatus
+  OverviewStats, ApplicationStatus, JobAnalysis, AIMetrics
 } from '../types';
 
 // ─── Jobs ─────────────────────────────────────────────────────────────────────
@@ -166,5 +166,54 @@ export function useSalaryRanges() {
       const { data } = await api.get('/analytics/salary-ranges');
       return data;
     },
+  });
+}
+
+// ─── AI Analysis ─────────────────────────────────────────────────────────────
+export function useJobAnalysis(jobId: string) {
+  return useQuery<{ job: Job; analysis: JobAnalysis | null }>({
+    queryKey: ['jobs', jobId, 'analysis'],
+    queryFn: async () => {
+      const { data } = await api.get(`/jobs/${jobId}/analysis`);
+      return data;
+    },
+    enabled: !!jobId,
+    // Poll while pending or processing to update status automatically in UI
+    refetchInterval: (query) => {
+      const status = query.state.data?.analysis?.status;
+      return status === 'pending' || status === 'processing' ? 2000 : false;
+    }
+  });
+}
+
+export function useTriggerJobAnalysis() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (jobId: string) => api.post(`/jobs/${jobId}/analyze`).then(r => r.data),
+    onSuccess: (_, jobId) => {
+      qc.invalidateQueries({ queryKey: ['jobs', jobId, 'analysis'] });
+    }
+  });
+}
+
+export function useSubmitRecommendationFeedback() {
+  return useMutation({
+    mutationFn: (body: {
+      jobId: string;
+      recommendationType: 'project' | 'resume_section' | 'interview_prep';
+      recommendationText: string;
+      feedback: 'helpful' | 'unhelpful';
+      comment?: string;
+    }) => api.post('/analysis/feedback', body).then(r => r.data)
+  });
+}
+
+export function useAIMetrics() {
+  return useQuery<AIMetrics>({
+    queryKey: ['ai', 'metrics'],
+    queryFn: async () => {
+      const { data } = await api.get('/ai/metrics');
+      return data;
+    }
   });
 }

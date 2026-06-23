@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useJobs, useDeleteJob, useUpdateJob } from '../api/hooks';
 import type { Job, ApplicationStatus } from '../types';
+import AnalysisPanel from '../components/AnalysisPanel';
 
 const STATUS_OPTIONS: ApplicationStatus[] = ['Saved', 'Applied', 'Interview', 'Rejected', 'Offer'];
 const SOURCES = ['LinkedIn', 'Indeed', 'Naukri', 'Wellfound', 'Extension'];
@@ -72,6 +73,9 @@ function JobDrawer({ job, onClose }: { job: Job; onClose: () => void }) {
               <ExternalLink size={12} /> View on {job.source ?? 'Portal'}
             </a>
           </div>
+
+          {/* AI Intelligence Panel */}
+          <AnalysisPanel jobId={job._id} />
 
           {/* Status changer */}
           <div>
