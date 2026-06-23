@@ -9,9 +9,12 @@ import * as hiringPostsController from '../controllers/hiringPostsController';
 import * as analysisController from '../controllers/analysisController';
 import * as profileController from '../controllers/profileController';
 import * as telemetryController from '../controllers/telemetryController';
+import * as resumeController from '../controllers/resumeController';
 import { authMiddleware } from '../middleware/auth';
+import multer from 'multer';
 
 const router = Router();
+const upload = multer({ limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB limit
 
 // Health check
 router.get('/health', (_req, res) => {
@@ -67,9 +70,37 @@ router.get('/jobs/:id/interview-prep', authMiddleware, analysisController.getInt
 // ─── Career Profile Endpoints ─────────────────────────────────────────────────
 router.get('/profile', authMiddleware, profileController.getProfileData);
 router.put('/profile', authMiddleware, profileController.updateProfileData);
+
+// Career Profile Sub-collection CRUD
 router.post('/profile/skills', authMiddleware, profileController.addSkill);
+router.put('/profile/skills/:id', authMiddleware, profileController.updateSkill);
+router.delete('/profile/skills/:id', authMiddleware, profileController.deleteSkill);
+
 router.post('/profile/projects', authMiddleware, profileController.addProject);
-router.post('/profile/resume-version', authMiddleware, profileController.uploadResumeVersion);
+router.put('/profile/projects/:id', authMiddleware, profileController.updateProject);
+router.delete('/profile/projects/:id', authMiddleware, profileController.deleteProject);
+
+router.post('/profile/experiences', authMiddleware, profileController.addExperience);
+router.put('/profile/experiences/:id', authMiddleware, profileController.updateExperience);
+router.delete('/profile/experiences/:id', authMiddleware, profileController.deleteExperience);
+
+router.post('/profile/education', authMiddleware, profileController.addEducation);
+router.put('/profile/education/:id', authMiddleware, profileController.updateEducation);
+router.delete('/profile/education/:id', authMiddleware, profileController.deleteEducation);
+
+router.post('/profile/certifications', authMiddleware, profileController.addCertification);
+router.delete('/profile/certifications/:id', authMiddleware, profileController.deleteCertification);
+
+router.post('/profile/achievements', authMiddleware, profileController.addAchievement);
+router.delete('/profile/achievements/:id', authMiddleware, profileController.deleteAchievement);
+
+// ─── Resume Intelligence & Builder Endpoints ──────────────────────────────────
+router.post('/resume/import', authMiddleware, upload.single('resume'), resumeController.importResume);
+router.post('/resume/generate', authMiddleware, resumeController.generateResume);
+router.get('/resume/versions', authMiddleware, resumeController.getResumeVersions);
+router.put('/resume/versions/:id/outcome', authMiddleware, resumeController.updateOutcome);
+router.get('/resume/templates', authMiddleware, resumeController.getTemplates);
+router.get('/resume/compare', authMiddleware, resumeController.compareVersions);
 
 // ─── Telemetry & Tuning Endpoints ─────────────────────────────────────────────
 router.post('/analysis/feedback', authMiddleware, telemetryController.submitFeedback);

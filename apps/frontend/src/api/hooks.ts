@@ -217,3 +217,259 @@ export function useAIMetrics() {
     }
   });
 }
+
+// ─── Career Profile Endpoints (Phase 4) ───────────────────────────────────────
+export function useProfileData() {
+  return useQuery<any>({
+    queryKey: ['profile'],
+    queryFn: async () => {
+      const { data } = await api.get('/profile');
+      return data;
+    }
+  });
+}
+
+export function useUpdateProfileData() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: any) => api.put('/profile', body).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profile'] });
+    }
+  });
+}
+
+export function useImportResume() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (formData: FormData) => api.post('/resume/import', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    }).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profile'] });
+    }
+  });
+}
+
+// Skills Sub-collection
+export function useAddSkill() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: { skillName: string; proficiency?: string; yearsOfExperience?: number; category?: string }) => api.post('/profile/skills', body).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profile'] });
+    }
+  });
+}
+
+export function useUpdateSkill() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, body }: { id: string; body: { proficiency?: string; yearsOfExperience?: number; category?: string } }) => api.put(`/profile/skills/${id}`, body).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profile'] });
+    }
+  });
+}
+
+export function useDeleteSkill() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.delete(`/profile/skills/${id}`).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profile'] });
+    }
+  });
+}
+
+// Projects Sub-collection
+export function useAddProject() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: any) => api.post('/profile/projects', body).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profile'] });
+    }
+  });
+}
+
+export function useUpdateProject() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, body }: { id: string; body: any }) => api.put(`/profile/projects/${id}`, body).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profile'] });
+    }
+  });
+}
+
+export function useDeleteProject() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.delete(`/profile/projects/${id}`).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profile'] });
+    }
+  });
+}
+
+// Experience Sub-collection
+export function useAddExperience() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: any) => api.post('/profile/experiences', body).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profile'] });
+    }
+  });
+}
+
+export function useUpdateExperience() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, body }: { id: string; body: any }) => api.put(`/profile/experiences/${id}`, body).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profile'] });
+    }
+  });
+}
+
+export function useDeleteExperience() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.delete(`/profile/experiences/${id}`).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profile'] });
+    }
+  });
+}
+
+// Education Sub-collection
+export function useAddEducation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: any) => api.post('/profile/education', body).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profile'] });
+    }
+  });
+}
+
+export function useUpdateEducation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, body }: { id: string; body: any }) => api.put(`/profile/education/${id}`, body).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profile'] });
+    }
+  });
+}
+
+export function useDeleteEducation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.delete(`/profile/education/${id}`).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profile'] });
+    }
+  });
+}
+
+// Certifications Sub-collection
+export function useAddCertification() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: { name: string; issuer: string; issueDate?: string; credentialUrl?: string }) => api.post('/profile/certifications', body).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profile'] });
+    }
+  });
+}
+
+export function useDeleteCertification() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.delete(`/profile/certifications/${id}`).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profile'] });
+    }
+  });
+}
+
+// Achievements Sub-collection
+export function useAddAchievement() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: { title: string; description?: string; category?: string }) => api.post('/profile/achievements', body).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profile'] });
+    }
+  });
+}
+
+export function useDeleteAchievement() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.delete(`/profile/achievements/${id}`).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['profile'] });
+    }
+  });
+}
+
+// Resume templates and generated versions
+export function useResumeTemplates() {
+  return useQuery<any[]>({
+    queryKey: ['resume', 'templates'],
+    queryFn: async () => {
+      const { data } = await api.get('/resume/templates');
+      return data;
+    }
+  });
+}
+
+export function useResumeVersions() {
+  return useQuery<any[]>({
+    queryKey: ['resume', 'versions'],
+    queryFn: async () => {
+      const { data } = await api.get('/resume/versions');
+      return data;
+    }
+  });
+}
+
+export function useGenerateResume() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: { jobId: string; templateId?: string; versionName?: string }) => api.post('/resume/generate', body).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['resume', 'versions'] });
+      qc.invalidateQueries({ queryKey: ['profile'] });
+    }
+  });
+}
+
+export function useUpdateResumeOutcome() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, outcome, notes }: { id: string; outcome: string; notes?: string }) => api.put(`/resume/versions/${id}/outcome`, { outcome, notes }).then(r => r.data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['resume', 'versions'] });
+    }
+  });
+}
+
+export function useCompareResumes(v1Id: string, v2Id: string) {
+  return useQuery<any>({
+    queryKey: ['resume', 'compare', v1Id, v2Id],
+    queryFn: async () => {
+      const { data } = await api.get('/resume/compare', {
+        params: { v1Id, v2Id }
+      });
+      return data;
+    },
+    enabled: !!v1Id && !!v2Id,
+  });
+}
+
+

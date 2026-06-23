@@ -1,18 +1,20 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Briefcase, Building2, Zap,
-  KanbanSquare, UserCircle, LogOut, Bot
+  KanbanSquare, UserCircle, LogOut, Bot, FileText, History
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
 const NAV_ITEMS = [
-  { to: '/overview',      icon: LayoutDashboard, label: 'Overview' },
-  { to: '/jobs',          icon: Briefcase,       label: 'Jobs' },
-  { to: '/companies',     icon: Building2,       label: 'Companies' },
-  { to: '/skills',        icon: Zap,             label: 'Skills' },
-  { to: '/tracker',       icon: KanbanSquare,    label: 'Tracker' },
-  { to: '/profile',       icon: UserCircle,      label: 'Profile' },
-  { to: '/ai-monitoring', icon: Bot,             label: 'AI Monitoring' },
+  { to: '/overview',        icon: LayoutDashboard, label: 'Overview' },
+  { to: '/jobs',            icon: Briefcase,       label: 'Jobs' },
+  { to: '/companies',       icon: Building2,       label: 'Companies' },
+  { to: '/skills',          icon: Zap,             label: 'Skills' },
+  { to: '/tracker',         icon: KanbanSquare,    label: 'Tracker' },
+  { to: '/profile',         icon: UserCircle,      label: 'Profile' },
+  { to: '/resume-builder',  icon: FileText,        label: 'Resume Builder' },
+  { to: '/resume-versions', icon: History,         label: 'Resume History' },
+  { to: '/ai-monitoring',   icon: Bot,             label: 'AI Monitoring' },
 ];
 
 export default function Sidebar() {

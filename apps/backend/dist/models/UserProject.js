@@ -7,7 +7,14 @@ const UserProjectSchema = new mongoose_1.Schema({
     title: { type: String, required: true },
     description: { type: String },
     technologies: [{ type: String }],
-    achievements: [{ type: String }]
+    achievements: [{ type: String }],
+    category: { type: String },
+    githubUrl: { type: String },
+    liveUrl: { type: String },
+    impactMetrics: [{ type: String }],
+    businessDomain: { type: String },
+    complexityScore: { type: Number },
+    resumePriority: { type: Number }
 }, {
     timestamps: true
 });

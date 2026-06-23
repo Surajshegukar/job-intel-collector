@@ -32,6 +32,9 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const authController = __importStar(require("../controllers/authController"));
@@ -44,8 +47,11 @@ const hiringPostsController = __importStar(require("../controllers/hiringPostsCo
 const analysisController = __importStar(require("../controllers/analysisController"));
 const profileController = __importStar(require("../controllers/profileController"));
 const telemetryController = __importStar(require("../controllers/telemetryController"));
+const resumeController = __importStar(require("../controllers/resumeController"));
 const auth_1 = require("../middleware/auth");
+const multer_1 = __importDefault(require("multer"));
 const router = (0, express_1.Router)();
+const upload = (0, multer_1.default)({ limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB limit
 // Health check
 router.get('/health', (_req, res) => {
     res.json({ status: 'ok', time: new Date().toISOString() });
@@ -90,9 +96,30 @@ router.get('/jobs/:id/interview-prep', auth_1.authMiddleware, analysisController
 // ─── Career Profile Endpoints ─────────────────────────────────────────────────
 router.get('/profile', auth_1.authMiddleware, profileController.getProfileData);
 router.put('/profile', auth_1.authMiddleware, profileController.updateProfileData);
+// Career Profile Sub-collection CRUD
 router.post('/profile/skills', auth_1.authMiddleware, profileController.addSkill);
+router.put('/profile/skills/:id', auth_1.authMiddleware, profileController.updateSkill);
+router.delete('/profile/skills/:id', auth_1.authMiddleware, profileController.deleteSkill);
 router.post('/profile/projects', auth_1.authMiddleware, profileController.addProject);
-router.post('/profile/resume-version', auth_1.authMiddleware, profileController.uploadResumeVersion);
+router.put('/profile/projects/:id', auth_1.authMiddleware, profileController.updateProject);
+router.delete('/profile/projects/:id', auth_1.authMiddleware, profileController.deleteProject);
+router.post('/profile/experiences', auth_1.authMiddleware, profileController.addExperience);
+router.put('/profile/experiences/:id', auth_1.authMiddleware, profileController.updateExperience);
+router.delete('/profile/experiences/:id', auth_1.authMiddleware, profileController.deleteExperience);
+router.post('/profile/education', auth_1.authMiddleware, profileController.addEducation);
+router.put('/profile/education/:id', auth_1.authMiddleware, profileController.updateEducation);
+router.delete('/profile/education/:id', auth_1.authMiddleware, profileController.deleteEducation);
+router.post('/profile/certifications', auth_1.authMiddleware, profileController.addCertification);
+router.delete('/profile/certifications/:id', auth_1.authMiddleware, profileController.deleteCertification);
+router.post('/profile/achievements', auth_1.authMiddleware, profileController.addAchievement);
+router.delete('/profile/achievements/:id', auth_1.authMiddleware, profileController.deleteAchievement);
+// ─── Resume Intelligence & Builder Endpoints ──────────────────────────────────
+router.post('/resume/import', auth_1.authMiddleware, upload.single('resume'), resumeController.importResume);
+router.post('/resume/generate', auth_1.authMiddleware, resumeController.generateResume);
+router.get('/resume/versions', auth_1.authMiddleware, resumeController.getResumeVersions);
+router.put('/resume/versions/:id/outcome', auth_1.authMiddleware, resumeController.updateOutcome);
+router.get('/resume/templates', auth_1.authMiddleware, resumeController.getTemplates);
+router.get('/resume/compare', auth_1.authMiddleware, resumeController.compareVersions);
 // ─── Telemetry & Tuning Endpoints ─────────────────────────────────────────────
 router.post('/analysis/feedback', auth_1.authMiddleware, telemetryController.submitFeedback);
 router.get('/ai/metrics', auth_1.authMiddleware, telemetryController.getMetrics);
