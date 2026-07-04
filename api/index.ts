@@ -17,5 +17,14 @@ async function init() {
 
 export default async function handler(req: any, res: any) {
   await init();
+
+  // Restore the original request URL from Vercel's rewrite header so Express can route correctly.
+  const originalUrl = req.headers['x-matched-path'] || req.url;
+  if (originalUrl && originalUrl !== '/api') {
+    const qPos = req.url.indexOf('?');
+    const query = qPos !== -1 ? req.url.substring(qPos) : '';
+    req.url = originalUrl + query;
+  }
+
   return app(req, res);
 }
