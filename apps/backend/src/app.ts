@@ -1,6 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import apiRouter from './routes/api';
+import { connectDB } from './config/db';
+import { AnalysisQueue } from './ai/services/AnalysisQueue';
+import mongoose from 'mongoose';
 
 const app = express();
 
@@ -13,6 +16,24 @@ app.use(cors({
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Lazy initialization for serverless environments (like Vercel)
+let isInitialized = false;
+app.use(async (_req, _res, next) => {
+  if (!isInitialized) {
+    try {
+      if (mongoose.connection.readyState === 0) {
+        await connectDB();
+      }
+      await AnalysisQueue.initialize();
+      isInitialized = true;
+    } catch (err) {
+      console.error('[Lazy Init Middleware Error]', err);
+      return next(err);
+    }
+  }
+  next();
+});
 
 // Mount API routes
 app.use('/api', apiRouter);

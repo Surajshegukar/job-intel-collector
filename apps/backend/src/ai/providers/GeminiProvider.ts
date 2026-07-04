@@ -1,5 +1,5 @@
 import { BaseProvider, AnalyzeJobOptions, AnalysisResult } from './BaseProvider';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { generateContentWithRetry } from '../utils/geminiHelper';
 import { skillExtractionPrompt } from '../prompts/skillExtraction';
 import { roleClassificationPrompt } from '../prompts/roleClassification';
 import { matchScoringPrompt } from '../prompts/matchScoring';
@@ -18,12 +18,6 @@ export class GeminiProvider extends BaseProvider {
     }
 
     try {
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ 
-        model: 'gemini-2.5-flash',
-        generationConfig: { responseMimeType: 'application/json' }
-      });
-
       const userProfileStr = options.userProfile
         ? JSON.stringify({
             skills: options.userProfile.skills,
@@ -84,8 +78,12 @@ You must respond with a JSON object matching the following structure:
 }
 `;
 
-      const result = await model.generateContent(prompt);
-      const rawText = result.response.text();
+      const result = await generateContentWithRetry({
+        apiKey,
+        prompt,
+        responseMimeType: 'application/json'
+      });
+      const rawText = result.text;
       const latencyMs = Date.now() - startTime;
       
       const parsed = JSON.parse(rawText);
@@ -94,7 +92,7 @@ You must respond with a JSON object matching the following structure:
       const promptTokens = Math.round(prompt.length / 4);
       const completionTokens = Math.round(rawText.length / 4);
       
-      // Cost calculation for gemini-1.5-flash ($0.075 / 1M input tokens, $0.30 / 1M output tokens)
+      // Cost calculation ($0.075 / 1M input tokens, $0.30 / 1M output tokens)
       const costUSD = (promptTokens * 0.000000075) + (completionTokens * 0.00000030);
 
       // Re-normalize missing skills by comparing candidate skills
@@ -117,7 +115,7 @@ You must respond with a JSON object matching the following structure:
         hiringUrgency: parsed.hiringUrgency || 'unknown',
         referralAvailable: !!parsed.referralAvailable,
         recruiterMentioned: !!parsed.recruiterMentioned,
-        modelName: 'gemini-2.5-flash',
+        modelName: result.modelUsed,
         promptTokens,
         completionTokens,
         costUSD,

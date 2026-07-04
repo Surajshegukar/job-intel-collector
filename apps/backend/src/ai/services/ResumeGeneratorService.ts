@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { generateContentWithRetry } from '../utils/geminiHelper';
 
 export interface ResumeGeneratorInput {
   profile: any;
@@ -63,12 +63,6 @@ export class ResumeGeneratorService {
     }
 
     try {
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({
-        model: 'gemini-2.5-flash',
-        generationConfig: { responseMimeType: 'application/json' }
-      });
-
       const profilePayload = {
         summary: input.profile?.summary || '',
         skills: input.skills.map(s => s.skillName || s.name),
@@ -166,9 +160,12 @@ You must respond with a JSON object of the following structure:
 }
 `;
 
-      const result = await model.generateContent(prompt);
-      const rawText = result.response.text();
-      return JSON.parse(rawText) as TailoredResumeOutput;
+      const result = await generateContentWithRetry({
+        apiKey,
+        prompt,
+        responseMimeType: 'application/json'
+      });
+      return JSON.parse(result.text) as TailoredResumeOutput;
 
     } catch (error) {
       console.error('[ResumeGeneratorService] Failed to generate resume with Gemini:', error);
