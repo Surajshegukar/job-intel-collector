@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { generateContentWithRetry } from '../utils/geminiHelper';
 
 export interface ScoreReport {
   atsScore: number;
@@ -16,12 +16,6 @@ export class ResumeScoringEngine {
     }
 
     try {
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({
-        model: 'gemini-2.5-flash',
-        generationConfig: { responseMimeType: 'application/json' }
-      });
-
       const prompt = `
 You are an expert Applicant Tracking System (ATS) and Technical Recruiter. Your task is to critique a resume against a target job description and provide a score report.
 
@@ -46,9 +40,12 @@ You must respond with a JSON object of the exact structure:
 }
 `;
 
-      const result = await model.generateContent(prompt);
-      const rawText = result.response.text();
-      return JSON.parse(rawText) as ScoreReport;
+      const result = await generateContentWithRetry({
+        apiKey,
+        prompt,
+        responseMimeType: 'application/json'
+      });
+      return JSON.parse(result.text) as ScoreReport;
 
     } catch (error) {
       console.error('[ResumeScoringEngine] Failed to score resume with Gemini:', error);

@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { generateContentWithRetry } from '../utils/geminiHelper';
 
 export interface ProjectInsights {
   projectCategory: string;
@@ -11,19 +11,16 @@ export interface ProjectInsights {
 export class ProjectIntelligenceEngine {
   static async analyzeProject(title: string, description: string, userTechnologies: string[]): Promise<ProjectInsights> {
     const apiKey = process.env.GEMINI_API_KEY;
+    const parseMode = process.env.PARSE_MODE || (apiKey ? 'gemini' : 'local');
 
-    if (!apiKey) {
-      console.warn('[ProjectIntelligenceEngine] GEMINI_API_KEY is not configured. Returning mock project insights.');
+    if (parseMode === 'local' || !apiKey) {
+      if (!apiKey && parseMode !== 'local') {
+        console.warn('[ProjectIntelligenceEngine] GEMINI_API_KEY is not configured. Returning mock project insights.');
+      }
       return this.getMockInsights(title, userTechnologies);
     }
 
     try {
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({
-        model: 'gemini-2.5-flash',
-        generationConfig: { responseMimeType: 'application/json' }
-      });
-
       const prompt = `
 You are an expert technical resume architect. Analyze the project details provided and extract/evaluate technical parameters.
 
@@ -42,9 +39,12 @@ You must return a JSON object with the following exact structure:
 }
 `;
 
-      const result = await model.generateContent(prompt);
-      const rawText = result.response.text();
-      return JSON.parse(rawText) as ProjectInsights;
+      const result = await generateContentWithRetry({
+        apiKey,
+        prompt,
+        responseMimeType: 'application/json'
+      });
+      return JSON.parse(result.text) as ProjectInsights;
 
     } catch (error) {
       console.error('[ProjectIntelligenceEngine] Failed to analyze project with Gemini:', error);

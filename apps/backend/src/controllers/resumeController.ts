@@ -142,22 +142,34 @@ export const importResume = async (req: AuthenticatedRequest, res: Response) => 
 
     await UserSkill.deleteMany({ userId });
     if (parsedData.skills && parsedData.skills.length > 0) {
-      const skillDocs = parsedData.skills.map(s => {
+      const seenNormalized = new Set<string>();
+      const skillDocs = [];
+      
+      for (const s of parsedData.skills) {
         const canonical = SkillTaxonomyService.normalizeSkill(s.skillName);
-        const category = SkillTaxonomyService.getCategory(canonical);
-        return {
-          userId,
-          name: s.skillName, // Keep name for legacy compatibility
-          skillName: s.skillName,
-          normalizedName: canonical.toLowerCase(),
-          category: s.category || category,
-          proficiency: s.proficiency || 'intermediate',
-          yearsOfExperience: s.yearsOfExperience || 1
-        };
-      });
-      await UserSkill.insertMany(skillDocs);
+        const normalizedName = canonical.toLowerCase();
+        
+        if (!seenNormalized.has(normalizedName)) {
+          seenNormalized.add(normalizedName);
+          const category = SkillTaxonomyService.getCategory(canonical);
+          skillDocs.push({
+            userId,
+            name: s.skillName, // Keep name for legacy compatibility
+            skillName: s.skillName,
+            normalizedName,
+            category: s.category || category,
+            proficiency: s.proficiency || 'intermediate',
+            yearsOfExperience: s.yearsOfExperience || 1
+          });
+        }
+      }
+
+      if (skillDocs.length > 0) {
+        await UserSkill.insertMany(skillDocs);
+      }
+
       // Sync back to User record
-      const skillsLegacy = parsedData.skills.map(s => s.skillName);
+      const skillsLegacy = skillDocs.map(s => s.skillName);
       await User.findByIdAndUpdate(userId, { $set: { skills: skillsLegacy } });
     }
 
