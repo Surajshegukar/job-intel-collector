@@ -1,3 +1,14 @@
+// Polyfill browser globals for pdf-parse compatibility in Vercel serverless environments
+if (typeof (global as any).DOMMatrix === 'undefined') {
+  (global as any).DOMMatrix = class DOMMatrix {};
+}
+if (typeof (global as any).ImageData === 'undefined') {
+  (global as any).ImageData = class ImageData {};
+}
+if (typeof (global as any).Path2D === 'undefined') {
+  (global as any).Path2D = class Path2D {};
+}
+
 import app from '../apps/backend/src/app';
 import { connectDB } from '../apps/backend/src/config/db';
 import { AnalysisQueue } from '../apps/backend/src/ai/services/AnalysisQueue';
