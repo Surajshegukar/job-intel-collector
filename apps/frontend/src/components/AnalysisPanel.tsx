@@ -5,10 +5,9 @@ import {
   Briefcase, Activity, Check
 } from 'lucide-react';
 import { 
-  useJobAnalysis, 
-  useTriggerJobAnalysis, 
-  useSubmitRecommendationFeedback 
+  useJobAnalysis, useTriggerJobAnalysis, useSubmitRecommendationFeedback 
 } from '../api/hooks';
+import { AnalysisPanelSkeleton } from '../components/Skeleton';
 
 interface AnalysisPanelProps {
   jobId: string;
@@ -53,14 +52,7 @@ export default function AnalysisPanel({ jobId }: AnalysisPanelProps) {
     }
   }
 
-  if (isLoading) {
-    return (
-      <div className="glass-card p-6 flex flex-col items-center justify-center space-y-3 min-h-[300px]">
-        <Bot className="animate-bounce text-brand-400" size={32} />
-        <p className="text-sm font-semibold text-dark-200">Loading AI Job Intelligence...</p>
-      </div>
-    );
-  }
+  if (isLoading) return <AnalysisPanelSkeleton />;
 
   if (isError || !analysis) {
     return (
