@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   User, Phone, Mail, MapPin, Globe, Linkedin, Github as GithubIcon, Clock,
-  Save, Loader2, Sparkles
+  Save, Loader2
 } from 'lucide-react';
 
 interface PersonalInfoSectionProps {
@@ -201,12 +201,12 @@ function ProfessionalSummaryCard({ profile, updateProfile }: { profile: any; upd
     }
   }
 
-  const AI_ACTIONS = [
-    { label: 'Improve', icon: '✦' },
-    { label: 'Rewrite', icon: '↺' },
-    { label: 'Shorten', icon: '⊖' },
-    { label: 'ATS Optimize', icon: '◈' },
-  ];
+  // const AI_ACTIONS = [
+  //   { label: 'Improve', icon: '✦' },
+  //   { label: 'Rewrite', icon: '↺' },
+  //   { label: 'Shorten', icon: '⊖' },
+  //   { label: 'ATS Optimize', icon: '◈' },
+  // ];
 
   return (
     <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">

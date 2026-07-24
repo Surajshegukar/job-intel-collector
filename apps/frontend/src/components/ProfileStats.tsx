@@ -60,7 +60,7 @@ export default function ProfileStats({ experiences, projects, skills, certificat
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      {STATS.map(({ key, label, subtitle, icon: Icon, iconBg, iconColor, hoverBorder, hoverShadow }) => (
+      {STATS.map(({ key, label, icon: Icon, iconBg, iconColor, hoverBorder, hoverShadow }) => (
         <div
           key={key}
           className={`glass-card p-5 flex  gap-4 cursor-default transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${hoverBorder} ${hoverShadow}`}

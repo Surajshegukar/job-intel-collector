@@ -5,7 +5,7 @@ import {
 } from 'recharts';
 import { 
   Bot, Clock, DollarSign, Cpu, FileJson, 
-  RefreshCw, CheckCircle2, XCircle, Loader2, BarChart3,
+  RefreshCw, CheckCircle2, XCircle, BarChart3,
   Activity, TrendingUp, Zap
 } from 'lucide-react';
 import api from '../api/client';

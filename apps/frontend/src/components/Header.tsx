@@ -1,57 +1,56 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Bell, Search, User, Settings, LogOut, ChevronDown,
-  Sparkles, TrendingUp, AlertCircle
+  User, Settings, LogOut, ChevronDown
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
 // Mock notifications - replace with real data from your API
-const MOCK_NOTIFICATIONS = [
-  {
-    id: '1',
-    type: 'success',
-    title: 'Application Update',
-    message: 'Your application for Senior Developer at TechCorp moved to Interview stage',
-    time: '5 min ago',
-    read: false,
-  },
-  {
-    id: '2',
-    type: 'info',
-    title: 'New Job Match',
-    message: '3 new jobs match your profile with 85%+ compatibility',
-    time: '2 hours ago',
-    read: false,
-  },
-  {
-    id: '3',
-    type: 'ai',
-    title: 'AI Analysis Complete',
-    message: 'Resume optimization suggestions are ready for "Full-Stack Role"',
-    time: '1 day ago',
-    read: true,
-  },
-];
+// const MOCK_NOTIFICATIONS = [
+//   {
+//     id: '1',
+//     type: 'success',
+//     title: 'Application Update',
+//     message: 'Your application for Senior Developer at TechCorp moved to Interview stage',
+//     time: '5 min ago',
+//     read: false,
+//   },
+//   {
+//     id: '2',
+//     type: 'info',
+//     title: 'New Job Match',
+//     message: '3 new jobs match your profile with 85%+ compatibility',
+//     time: '2 hours ago',
+//     read: false,
+//   },
+//   {
+//     id: '3',
+//     type: 'ai',
+//     title: 'AI Analysis Complete',
+//     message: 'Resume optimization suggestions are ready for "Full-Stack Role"',
+//     time: '1 day ago',
+//     read: true,
+//   },
+// ];
 
 export default function Header() {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
 
-  const [showNotifications, setShowNotifications] = useState(false);
+  // const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [notifications] = useState(MOCK_NOTIFICATIONS);
+  // const [notifications] = useState(MOCK_NOTIFICATIONS);
 
   const notifRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  // const unreadCount = notifications.filter(n => !n.read).length;
 
   // Close dropdowns on outside click
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
-        setShowNotifications(false);
+        // setShowNotifications(false);
       }
       if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
         setShowProfileMenu(false);
@@ -66,12 +65,12 @@ export default function Header() {
     navigate('/login');
   }
 
-  const notificationIcon: Record<string, { icon: any; color: string; bg: string }> = {
-    success: { icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    info: { icon: Sparkles, color: 'text-blue-600', bg: 'bg-blue-50' },
-    ai: { icon: Sparkles, color: 'text-violet-600', bg: 'bg-violet-50' },
-    warning: { icon: AlertCircle, color: 'text-amber-600', bg: 'bg-amber-50' },
-  };
+  // const notificationIcon: Record<string, { icon: any; color: string; bg: string }> = {
+  //   success: { icon: TrendingUp, color: 'text-emerald-650', bg: 'bg-emerald-50' },
+  //   info: { icon: Sparkles, color: 'text-blue-600', bg: 'bg-blue-50' },
+  //   ai: { icon: Sparkles, color: 'text-violet-600', bg: 'bg-violet-50' },
+  //   warning: { icon: AlertCircle, color: 'text-amber-605', bg: 'bg-amber-50' },
+  // };
 
   return (
     <header className="sticky top-0 z-20 bg-white border-b border-slate-100">
