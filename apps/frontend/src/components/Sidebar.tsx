@@ -57,7 +57,7 @@ export default function Sidebar() {
       </nav>
 
       {/* User Footer */}
-      <div className="px-3 py-4 border-t border-dark-800/60">
+      {/* <div className="px-3 py-4 border-t border-dark-800/60">
         
         <button
           onClick={handleLogout}
@@ -66,7 +66,7 @@ export default function Sidebar() {
           <LogOut size={15} />
           Sign Out
         </button>
-      </div>
+      </div> */}
     </aside>
   );
 }
