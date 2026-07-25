@@ -9,12 +9,7 @@ interface SkillsSectionProps {
   setNewSkill: (v: any) => void;
 }
 
-const PROFICIENCY_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
-  beginner:     { bg: 'bg-slate-100',    text: 'text-slate-500',   dot: 'bg-slate-400' },
-  intermediate: { bg: 'bg-blue-50',      text: 'text-blue-600',    dot: 'bg-blue-400' },
-  advanced:     { bg: 'bg-violet-50',    text: 'text-violet-600',  dot: 'bg-violet-500' },
-  expert:       { bg: 'bg-emerald-50',   text: 'text-emerald-700', dot: 'bg-emerald-500' },
-};
+
 
 const CATEGORIES = ['Frontend', 'Backend', 'Database', 'Cloud', 'DevOps', 'Testing', 'Mobile', 'AI/ML', 'General'];
 
@@ -31,7 +26,7 @@ export default function SkillsSection({
     e.preventDefault();
     if (!newSkill.skillName.trim()) return;
     await addSkill.mutateAsync(newSkill);
-    setNewSkill({ skillName: '', proficiency: 'intermediate', yearsOfExperience: 1, category: '' });
+    setNewSkill({ skillName: '', category: '' });
     setIsAdding(false);
   }
 
@@ -77,38 +72,16 @@ export default function SkillsSection({
                 placeholder="e.g. TypeScript"
                 autoFocus
                 required
-                className="h-[42px] px-4 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200"
+                className="w-full h-10 px-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/10 transition-all duration-200 hover:border-slate-355"
               />
             </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium text-slate-500">Proficiency</label>
-              <select
-                value={newSkill.proficiency}
-                onChange={(e) => setNewSkill((p: any) => ({ ...p, proficiency: e.target.value }))}
-                className="h-[42px] px-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200"
-              >
-                <option value="beginner">Beginner</option>
-                <option value="intermediate">Intermediate</option>
-                <option value="advanced">Advanced</option>
-                <option value="expert">Expert</option>
-              </select>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium text-slate-500">Years</label>
-              <input
-                type="number"
-                value={newSkill.yearsOfExperience}
-                min={0}
-                onChange={(e) => setNewSkill((p: any) => ({ ...p, yearsOfExperience: Number(e.target.value) }))}
-                className="h-[42px] w-20 px-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200"
-              />
-            </div>
+
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-medium text-slate-500">Category</label>
               <select
                 value={newSkill.category}
                 onChange={(e) => setNewSkill((p: any) => ({ ...p, category: e.target.value }))}
-                className="h-[42px] px-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200"
+                className="h-10 px-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/10 transition-all duration-200 hover:border-slate-355"
               >
                 <option value="">Select category</option>
                 {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
@@ -118,7 +91,7 @@ export default function SkillsSection({
               <button
                 type="submit"
                 disabled={addSkill.isPending}
-                className="h-[42px] px-5 bg-brand-600 text-white text-sm font-semibold rounded-xl transition-all duration-200 hover:bg-brand-500 active:scale-95 disabled:opacity-50 flex items-center gap-2"
+                className="h-10 px-5 bg-brand-600 text-white text-xs font-semibold rounded-lg transition-all duration-200 hover:bg-brand-500 active:scale-95 disabled:opacity-50 flex items-center gap-2"
               >
                 {addSkill.isPending ? <Loader2 size={13} className="animate-spin" /> : <Plus size={13} />}
                 Add
@@ -166,21 +139,15 @@ export default function SkillsSection({
               </div>
               <div className="flex flex-wrap gap-2">
                 {skills.map((sk: any) => {
-                  const prof = sk.proficiency || 'intermediate';
-                  const colors = PROFICIENCY_COLORS[prof] || PROFICIENCY_COLORS.intermediate;
                   return (
                     <div
                       key={sk._id}
-                      className={`group inline-flex items-center gap-2 px-3.5 py-2 ${colors.bg} rounded-full transition-all duration-200 hover:shadow-sm`}
+                      className="group inline-flex items-center gap-2 px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-full transition-all duration-200 hover:shadow-sm"
                     >
-                      <div className={`w-1.5 h-1.5 rounded-full ${colors.dot} shrink-0`} />
-                      <span className={`text-sm font-medium ${colors.text}`}>{sk.name || sk.skillName}</span>
-                      {sk.yearsOfExperience > 0 && (
-                        <span className={`text-[10px] font-medium ${colors.text} opacity-70`}>{sk.yearsOfExperience}y</span>
-                      )}
+                      <span className="text-sm font-medium text-slate-700">{sk.name || sk.skillName}</span>
                       <button
                         onClick={() => deleteSkill.mutate(sk._id)}
-                        className={`opacity-0 group-hover:opacity-100 transition-all duration-150 ${colors.text} hover:opacity-100 ml-0.5`}
+                        className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 transition-all duration-150 ml-0.5"
                         aria-label={`Remove ${sk.name || sk.skillName}`}
                       >
                         <X size={12} />
@@ -229,16 +196,7 @@ export default function SkillsSection({
               </div>
             )}
 
-            {/* Legend */}
-            <div className="flex items-center gap-5 pt-2 border-t border-slate-100">
-              <span className="text-xs text-slate-400 font-medium">Proficiency level:</span>
-              {Object.entries(PROFICIENCY_COLORS).map(([level, colors]) => (
-                <div key={level} className="flex items-center gap-1.5">
-                  <div className={`w-2 h-2 rounded-full ${colors.dot}`} />
-                  <span className="text-xs text-slate-500 capitalize">{level}</span>
-                </div>
-              ))}
-            </div>
+
           </div>
         )}
       </div>

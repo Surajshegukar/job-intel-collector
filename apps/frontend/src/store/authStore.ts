@@ -11,6 +11,7 @@ interface UserProfile {
   skills?: string[];
   certifications?: string[];
   resumeText?: string;
+  isOnboarded?: boolean;
 }
 
 interface AuthState {

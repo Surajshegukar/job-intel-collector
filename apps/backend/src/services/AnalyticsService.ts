@@ -1,25 +1,35 @@
+import { Types } from 'mongoose';
 import { Job } from '../models/Job';
-import { Company } from '../models/Company';
-import { Skill } from '../models/Skill';
 import { Application } from '../models/Application';
 
 export class AnalyticsService {
   /**
    * Get overall overview stats.
    */
-  static async getOverviewStats(): Promise<{
+  static async getOverviewStats(userId: string): Promise<{
     totalJobs: number;
     totalCompanies: number;
     totalSkills: number;
     totalApplications: number;
     statusDistribution: { status: string; count: number }[];
   }> {
-    const totalJobs = await Job.countDocuments();
-    const totalCompanies = await Company.countDocuments();
-    const totalSkills = await Skill.countDocuments();
-    const totalApplications = await Application.countDocuments();
+    const userObjId = new Types.ObjectId(userId);
+    const totalJobs = await Job.countDocuments({ userId });
+    
+    // Find all distinct companies associated with this user's jobs
+    const userCompanyIds = await Job.find({ userId }).distinct('companyId');
+    const totalCompanies = userCompanyIds.length;
+
+    // Distinct skills in the user's jobs
+    const userJobSkills = await Job.find({ userId }).distinct('skills');
+    const totalSkills = userJobSkills.length;
+
+    const totalApplications = await Application.countDocuments({ userId });
 
     const statusAggregation = await Application.aggregate([
+      {
+        $match: { userId: userObjId }
+      },
       {
         $group: {
           _id: '$status',
@@ -45,18 +55,49 @@ export class AnalyticsService {
   /**
    * Get top requested skills.
    */
-  static async getTopSkills(limit = 10): Promise<any[]> {
-    return Skill.find()
-      .sort({ frequency: -1 })
-      .limit(limit)
-      .select('name category frequency');
+  static async getTopSkills(userId: string, limit = 10): Promise<any[]> {
+    const userObjId = new Types.ObjectId(userId);
+    const aggregation = await Job.aggregate([
+      {
+        $match: { userId: userObjId }
+      },
+      {
+        $unwind: '$skills'
+      },
+      {
+        $group: {
+          _id: '$skills',
+          frequency: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { frequency: -1 }
+      },
+      {
+        $limit: limit
+      },
+      {
+        $project: {
+          name: '$_id',
+          frequency: 1,
+          category: { $literal: 'General' },
+          _id: 0
+        }
+      }
+    ]);
+
+    return aggregation;
   }
 
   /**
    * Get companies with the most job posts.
    */
-  static async getTopCompanies(limit = 10): Promise<any[]> {
+  static async getTopCompanies(userId: string, limit = 10): Promise<any[]> {
+    const userObjId = new Types.ObjectId(userId);
     const aggregation = await Job.aggregate([
+      {
+        $match: { userId: userObjId }
+      },
       {
         $group: {
           _id: '$companyId',
@@ -97,8 +138,12 @@ export class AnalyticsService {
   /**
    * Get job location distribution.
    */
-  static async getLocationStats(limit = 10): Promise<any[]> {
+  static async getLocationStats(userId: string, limit = 10): Promise<any[]> {
+    const userObjId = new Types.ObjectId(userId);
     const aggregation = await Job.aggregate([
+      {
+        $match: { userId: userObjId }
+      },
       {
         $group: {
           _id: {
@@ -133,8 +178,8 @@ export class AnalyticsService {
    * Get salary ranges.
    * Categorizes salary strings into basic salary bands.
    */
-  static async getSalaryRangeStats(): Promise<any[]> {
-    const jobs = await Job.find({}, 'salary');
+  static async getSalaryRangeStats(userId: string): Promise<any[]> {
+    const jobs = await Job.find({ userId }, 'salary');
     
     const bands = {
       'Not Specified': 0,

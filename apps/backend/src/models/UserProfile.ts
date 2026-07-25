@@ -17,7 +17,8 @@ const UserProfileSchema = new Schema({
   linkedinUrl: { type: String },
   githubUrl: { type: String },
   portfolioUrl: { type: String },
-  summary: { type: String }
+  summary: { type: String },
+  noticePeriod: { type: String }
 }, {
   timestamps: true
 });

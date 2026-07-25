@@ -1,9 +1,13 @@
 import { Request, Response } from 'express';
 import { HiringPost } from '../models/HiringPost';
 import { CompanyService } from '../services/CompanyService';
+import { AuthenticatedRequest } from '../middleware/auth';
 
 export const createHiringPost = async (req: Request, res: Response) => {
   try {
+    const userId = (req as AuthenticatedRequest).user?.id;
+    if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+
     const { author, company, content, source, url } = req.body;
     if (!content) {
       return res.status(400).json({ message: 'Content is required' });
@@ -16,6 +20,7 @@ export const createHiringPost = async (req: Request, res: Response) => {
     }
 
     const post = new HiringPost({
+      userId,
       companyId,
       author: author || 'Unknown',
       content,
@@ -25,16 +30,19 @@ export const createHiringPost = async (req: Request, res: Response) => {
 
     await post.save();
 
-    const populatedPost = await HiringPost.findById(post._id).populate('companyId');
+    const populatedPost = await HiringPost.findOne({ _id: post._id, userId }).populate('companyId');
     return res.status(201).json(populatedPost);
   } catch (error) {
     return res.status(500).json({ message: 'Server error', error: (error as Error).message });
   }
 };
 
-export const getHiringPosts = async (_req: Request, res: Response) => {
+export const getHiringPosts = async (req: Request, res: Response) => {
   try {
-    const posts = await HiringPost.find()
+    const userId = (req as AuthenticatedRequest).user?.id;
+    if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+
+    const posts = await HiringPost.find({ userId })
       .populate('companyId')
       .sort({ createdAt: -1 });
     return res.json(posts);

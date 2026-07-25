@@ -23,7 +23,7 @@ function InputField({
     <div className="flex flex-col gap-1.5">
       <label className="text-xs font-medium text-slate-500">{label}</label>
       <div className="relative">
-        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
           <Icon size={14} />
         </div>
         <input
@@ -32,14 +32,12 @@ function InputField({
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
           required={required}
-          className="w-full h-[42px] pl-10 pr-4 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 hover:border-slate-300"
+          className="w-full h-10 pl-9 pr-4 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/10 hover:border-slate-350"
         />
       </div>
     </div>
   );
 }
-
-const plainInputCls = 'w-full h-[42px] px-4 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 hover:border-slate-300';
 
 export default function PersonalInfoSection({
   profile, updateProfile, saveSuccess, setSaveSuccess,
@@ -122,48 +120,6 @@ export default function PersonalInfoSection({
             <InputField label="Email Address"     icon={Mail}        value={profile.email || ''} onChange={() => {}}            placeholder="alex@example.com" type="email" />
           </div>
 
-          <div className="border-t border-slate-100" />
-
-          {/* Job Preferences */}
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-sm font-semibold text-slate-700">Job Preferences</h3>
-              <p className="text-xs text-slate-400 mt-0.5">Used to tailor job recommendations and match scores.</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-slate-500">Preferred Roles <span className="text-slate-400">(comma-separated)</span></label>
-                <input type="text" value={fields.preferredRoles} onChange={e => set('preferredRoles')(e.target.value)} placeholder="Full-Stack Developer, Frontend Engineer" className={plainInputCls} />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-slate-500">Preferred Locations <span className="text-slate-400">(comma-separated)</span></label>
-                <input type="text" value={fields.preferredLocations} onChange={e => set('preferredLocations')(e.target.value)} placeholder="New York, Remote" className={plainInputCls} />
-              </div>
-            </div>
-          </div>
-
-          {/* Salary */}
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-sm font-semibold text-slate-700">Salary Expectation</h3>
-              <p className="text-xs text-slate-400 mt-0.5">Shared only with matched employers based on your settings.</p>
-            </div>
-            <div className="grid grid-cols-3 gap-x-6 gap-y-5">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-slate-500">Minimum</label>
-                <input type="number" value={fields.salaryMin} onChange={e => set('salaryMin')(e.target.value)} placeholder="60000" className={plainInputCls} />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-slate-500">Maximum</label>
-                <input type="number" value={fields.salaryMax} onChange={e => set('salaryMax')(e.target.value)} placeholder="120000" className={plainInputCls} />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-slate-500">Currency</label>
-                <input type="text" value={fields.salaryCurrency} onChange={e => set('salaryCurrency')(e.target.value)} placeholder="USD" className={plainInputCls} />
-              </div>
-            </div>
-          </div>
-
           {/* Footer */}
           <div className="flex items-center justify-between pt-2 border-t border-slate-100">
             <p className="text-xs text-slate-400">Changes are saved to your profile and synced across all resumes.</p>
@@ -232,7 +188,7 @@ function ProfessionalSummaryCard({ profile, updateProfile }: { profile: any; upd
           onChange={e => setSummary(e.target.value)}
           rows={6}
           placeholder="Write a compelling professional summary that highlights your core expertise, years of experience, and what makes you stand out..."
-          className="w-full px-5 py-4 pb-0 bg-slate-50/60 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 leading-relaxed transition-all duration-200 focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/10 hover:border-slate-300 resize-none"
+          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 leading-relaxed transition-all duration-200 focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/10 hover:border-slate-350 resize-none"
         />
 <div className="flex items-center justify-between text-xs text-slate-400">
           <span>{summary.length} characters · {summary.split(/\s+/).filter(Boolean).length} words</span>

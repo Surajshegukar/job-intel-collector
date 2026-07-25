@@ -25,7 +25,10 @@ export class JobProcessingService {
   /**
    * Process and save/update a raw scraped job post.
    */
-  static async processAndSaveJob(input: RawJobInput): Promise<{ job: any; action: 'created' | 'updated' }> {
+  static async processAndSaveJob(input: RawJobInput, userId: string): Promise<{ job: any; action: 'created' | 'updated' }> {
+    if (!userId) {
+      throw new Error('userId is required to process and save a job.');
+    }
     if (!input.title || !input.companyName || !input.url) {
       throw new Error('Title, companyName, and url are required fields.');
     }
@@ -42,8 +45,9 @@ export class JobProcessingService {
     const companyId = company._id;
     const cleanUrl = input.url.trim();
 
-    // 2. Check duplicate: by URL or (companyId + title + location)
+    // 2. Check duplicate: by URL or (companyId + title + location) for THIS USER
     let existingJob = await Job.findOne({
+      userId,
       $or: [
         { url: cleanUrl },
         { companyId, title: { $regex: new RegExp(`^${escapeRegExp(input.title.trim())}$`, 'i') }, location: input.location }
@@ -85,7 +89,7 @@ export class JobProcessingService {
       // If status changed and we have an application, sync it
       if (input.status) {
         await Application.findOneAndUpdate(
-          { jobId: existingJob._id },
+          { userId, jobId: existingJob._id },
           { $set: { status: input.status } }
         );
       }
@@ -100,6 +104,7 @@ export class JobProcessingService {
 
       // Create new job
       const newJob = new Job({
+        userId,
         title: input.title.trim(),
         companyId,
         source: input.source || 'Extension',
@@ -121,6 +126,7 @@ export class JobProcessingService {
 
       // 5. Auto-initialize application record
       const newApplication = new Application({
+        userId,
         jobId: newJob._id,
         status: input.status || 'Saved',
         notes: '',
@@ -136,8 +142,8 @@ export class JobProcessingService {
   /**
    * Delete a job and its associated application and clean up skill counts.
    */
-  static async deleteJob(jobId: string): Promise<void> {
-    const job = await Job.findById(jobId);
+  static async deleteJob(jobId: string, userId: string): Promise<void> {
+    const job = await Job.findOne({ _id: jobId, userId });
     if (!job) return;
 
     // Remove skills count
@@ -146,10 +152,10 @@ export class JobProcessingService {
     }
 
     // Delete job
-    await Job.findByIdAndDelete(jobId);
+    await Job.findOneAndDelete({ _id: jobId, userId });
 
     // Delete application
-    await Application.findOneAndDelete({ jobId });
+    await Application.findOneAndDelete({ jobId, userId });
   }
 }
 

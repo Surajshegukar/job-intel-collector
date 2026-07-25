@@ -1,11 +1,13 @@
 import { useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import {
   UserCircle, Briefcase, GraduationCap, FolderOpen, Award, Code,
-  X, AlertCircle, UploadCloud, Loader2
+  X, AlertCircle, UploadCloud, Loader2, Target
 } from 'lucide-react';
 import ProfileHero from '../components/ProfileHero';
 import ProfileStats from '../components/ProfileStats';
 import PersonalInfoSection from '../components/profile/PersonalInfoSection';
+import CareerTargetsSection from '../components/profile/CareerTargetsSection';
 import SkillsSection from '../components/profile/SkillsSection';
 import ExperienceSection from '../components/profile/ExperienceSection';
 import ProjectsSection from '../components/profile/ProjectsSection';
@@ -22,10 +24,11 @@ import {
   useAddAchievement, useDeleteAchievement
 } from '../api/hooks';
 
-type Tab = 'info' | 'skills' | 'experience' | 'education' | 'projects' | 'credentials';
+type Tab = 'info' | 'targets' | 'skills' | 'experience' | 'education' | 'projects' | 'credentials';
 
 const TABS: { id: Tab; label: string; icon: any }[] = [
   { id: 'info',        label: 'Personal Info',  icon: UserCircle },
+  { id: 'targets',     label: 'Career Targets', icon: Target },
   { id: 'experience',  label: 'Experience',     icon: Briefcase },
   { id: 'projects',    label: 'Projects',       icon: FolderOpen },
   { id: 'skills',      label: 'Skills',         icon: Code },
@@ -85,7 +88,7 @@ export default function Profile() {
     school: '', degree: '', fieldOfStudy: '', startDate: '', endDate: '', description: ''
   });
 
-  const [newSkill, setNewSkill] = useState({ skillName: '', proficiency: 'intermediate', yearsOfExperience: 1, category: '' });
+  const [newSkill, setNewSkill] = useState({ skillName: '', category: '' });
   const [newCert, setNewCert] = useState({ name: '', issuer: '', issueDate: '', credentialUrl: '' });
   const [newAch, setNewAch] = useState({ title: '', description: '', category: '' });
 
@@ -200,7 +203,7 @@ export default function Profile() {
     setIsEduModalOpen(false);
   }
 
-  const inputCls = 'w-full h-[42px] px-4 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 hover:border-slate-300';
+  const inputCls = 'w-full h-10 px-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/10 hover:border-slate-355';
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -260,6 +263,9 @@ export default function Profile() {
         {activeTab === 'info' && (
           <PersonalInfoSection profile={profile} updateProfile={updateProfile} saveSuccess={saveSuccess} setSaveSuccess={setSaveSuccess} />
         )}
+        {activeTab === 'targets' && (
+          <CareerTargetsSection profile={profile} updateProfile={updateProfile} saveSuccess={saveSuccess} setSaveSuccess={setSaveSuccess} />
+        )}
         {activeTab === 'skills' && (
           <SkillsSection skills={skills} addSkill={addSkill} deleteSkill={deleteSkill} newSkill={newSkill} setNewSkill={setNewSkill} />
         )}
@@ -282,160 +288,188 @@ export default function Profile() {
         )}
       </div>
 
-      {/* Experience Modal */}
-      {isExpModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setIsExpModalOpen(false)} />
-          <form onSubmit={handleSaveExperience} className="relative w-full max-w-lg bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-2xl overflow-y-auto max-h-[90vh]">
-            <div className="flex items-center justify-between">
-              <h4 className="text-base font-semibold text-slate-800">{editingExp ? 'Edit Experience' : 'Add Experience'}</h4>
-              <button type="button" onClick={() => setIsExpModalOpen(false)} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all">
+      {/* Experience Drawer */}
+      {isExpModalOpen && createPortal(
+        <div className="fixed inset-0 z-[9999] flex justify-end">
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-slate-900/20 backdrop-blur-xs transition-opacity duration-300" onClick={() => setIsExpModalOpen(false)} />
+          
+          {/* Drawer Body */}
+          <form onSubmit={handleSaveExperience} className="relative w-full max-w-md h-full bg-white border-l border-slate-100 shadow-2xl flex flex-col animate-slide-left z-10">
+            {/* Header */}
+            <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between shrink-0">
+              <h4 className="text-sm font-bold text-slate-800">{editingExp ? 'Edit Experience' : 'Add Experience'}</h4>
+              <button type="button" onClick={() => setIsExpModalOpen(false)} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg transition-all">
                 <X size={16} />
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            
+            {/* Scrollable Form Content */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-500">Company</label>
-                <input type="text" value={expForm.company} onChange={e => setExpForm(p => ({ ...p, company: e.target.value }))} className={inputCls} required />
+                <label className="text-xs font-bold text-slate-750">Company *</label>
+                <input type="text" value={expForm.company} onChange={e => setExpForm(p => ({ ...p, company: e.target.value }))} className={inputCls} placeholder="e.g. Stripe Inc." required />
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-500">Role Title</label>
-                <input type="text" value={expForm.role} onChange={e => setExpForm(p => ({ ...p, role: e.target.value }))} className={inputCls} required />
+                <label className="text-xs font-bold text-slate-755">Role Title *</label>
+                <input type="text" value={expForm.role} onChange={e => setExpForm(p => ({ ...p, role: e.target.value }))} className={inputCls} placeholder="e.g. Senior Software Engineer" required />
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-500">Employment Type</label>
-                <select value={expForm.employmentType} onChange={e => setExpForm(p => ({ ...p, employmentType: e.target.value }))} className={inputCls}>
+                <label className="text-xs font-bold text-slate-755">Employment Type</label>
+                <select value={expForm.employmentType} onChange={e => setExpForm(p => ({ ...p, employmentType: e.target.value }))} className="w-full h-10 px-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/10 hover:border-slate-355 !py-1">
                   <option>Full-Time</option><option>Part-Time</option><option>Contract</option><option>Internship</option><option>Freelance</option>
                 </select>
               </div>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-500">Start</label>
+                  <label className="text-xs font-bold text-slate-755">Start Date *</label>
                   <input type="text" value={expForm.startDate} onChange={e => setExpForm(p => ({ ...p, startDate: e.target.value }))} className={inputCls} placeholder="YYYY-MM" required />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-500">End</label>
+                  <label className="text-xs font-bold text-slate-755">End Date</label>
                   <input type="text" value={expForm.endDate} onChange={e => setExpForm(p => ({ ...p, endDate: e.target.value }))} className={inputCls} placeholder="Present" />
                 </div>
               </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-755">Description</label>
+                <textarea value={expForm.description} onChange={e => setExpForm(p => ({ ...p, description: e.target.value }))} rows={3} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/10 resize-none transition-all hover:border-slate-355" placeholder="Describe your duties..." />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-755">Achievements (one per line)</label>
+                <textarea value={expForm.achievements} onChange={e => setExpForm(p => ({ ...p, achievements: e.target.value }))} rows={3} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/10 resize-none transition-all hover:border-slate-355" placeholder="e.g. Led migration to Next.js..." />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-755">Technologies (comma-separated)</label>
+                <input type="text" value={expForm.technologies} onChange={e => setExpForm(p => ({ ...p, technologies: e.target.value }))} className={inputCls} placeholder="React, Node.js, AWS" />
+              </div>
             </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-slate-500">Description</label>
-              <textarea value={expForm.description} onChange={e => setExpForm(p => ({ ...p, description: e.target.value }))} rows={2} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 resize-none transition-all" />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-slate-500">Achievements (one per line)</label>
-              <textarea value={expForm.achievements} onChange={e => setExpForm(p => ({ ...p, achievements: e.target.value }))} rows={3} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 resize-none transition-all" placeholder="Improved load time by 40%..." />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-slate-500">Technologies (comma-separated)</label>
-              <input type="text" value={expForm.technologies} onChange={e => setExpForm(p => ({ ...p, technologies: e.target.value }))} className={inputCls} placeholder="React, Node.js, PostgreSQL" />
-            </div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
-              <button type="button" onClick={() => setIsExpModalOpen(false)} className="px-4 py-2 bg-white border border-slate-200 text-slate-600 text-sm font-medium rounded-xl hover:bg-slate-50 transition-all">Cancel</button>
-              <button type="submit" className="px-5 py-2 bg-brand-600 text-white text-sm font-semibold rounded-xl hover:bg-brand-500 transition-all">Save Experience</button>
+
+            {/* Sticky Drawer Footer */}
+            <div className="px-6 py-4 border-t border-slate-100 flex justify-end gap-2 bg-slate-50 shrink-0">
+              <button type="button" onClick={() => setIsExpModalOpen(false)} className="px-4 py-2 border border-slate-200 text-slate-600 text-xs font-semibold rounded-lg hover:bg-slate-100 transition-all bg-white">Cancel</button>
+              <button type="submit" className="px-5 py-2 bg-brand-600 text-white text-xs font-semibold rounded-lg hover:bg-brand-500 transition-all">Save Experience</button>
             </div>
           </form>
         </div>
-      )}
+      , document.body)}
 
-      {/* Project Modal */}
-      {isProjModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setIsProjModalOpen(false)} />
-          <form onSubmit={handleSaveProject} className="relative w-full max-w-lg bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-2xl overflow-y-auto max-h-[90vh]">
-            <div className="flex items-center justify-between">
-              <h4 className="text-base font-semibold text-slate-800">{editingProj ? 'Edit Project' : 'Add Project'}</h4>
-              <button type="button" onClick={() => setIsProjModalOpen(false)} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all">
+      {/* Project Drawer */}
+      {isProjModalOpen && createPortal(
+        <div className="fixed inset-0 z-[9999] flex justify-end">
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-slate-900/20 backdrop-blur-xs transition-opacity duration-300" onClick={() => setIsProjModalOpen(false)} />
+          
+          {/* Drawer Body */}
+          <form onSubmit={handleSaveProject} className="relative w-full max-w-md h-full bg-white border-l border-slate-100 shadow-2xl flex flex-col animate-slide-left z-10">
+            {/* Header */}
+            <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between shrink-0">
+              <h4 className="text-sm font-bold text-slate-800">{editingProj ? 'Edit Project' : 'Add Project'}</h4>
+              <button type="button" onClick={() => setIsProjModalOpen(false)} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg transition-all">
                 <X size={16} />
               </button>
             </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-slate-500">Project Title</label>
-              <input type="text" value={projForm.title} onChange={e => setProjForm(p => ({ ...p, title: e.target.value }))} className={inputCls} required />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
+            
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-500">Category</label>
-                <input type="text" value={projForm.category} onChange={e => setProjForm(p => ({ ...p, category: e.target.value }))} className={inputCls} placeholder="SaaS, API, Mobile..." />
+                <label className="text-xs font-bold text-slate-755">Project Title *</label>
+                <input type="text" value={projForm.title} onChange={e => setProjForm(p => ({ ...p, title: e.target.value }))} className={inputCls} placeholder="e.g. AI Portfolio Analyzer" required />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-755">Category</label>
+                  <input type="text" value={projForm.category} onChange={e => setProjForm(p => ({ ...p, category: e.target.value }))} className={inputCls} placeholder="SaaS, Mobile, Web CLI" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-755">Technologies</label>
+                  <input type="text" value={projForm.technologies} onChange={e => setProjForm(p => ({ ...p, technologies: e.target.value }))} className={inputCls} placeholder="TypeScript, Tailwind" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-755">GitHub URL</label>
+                  <input type="url" value={projForm.githubUrl} onChange={e => setProjForm(p => ({ ...p, githubUrl: e.target.value }))} className={inputCls} placeholder="https://github.com/..." />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-755">Live URL</label>
+                  <input type="url" value={projForm.liveUrl} onChange={e => setProjForm(p => ({ ...p, liveUrl: e.target.value }))} className={inputCls} placeholder="https://..." />
+                </div>
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-500">Technologies</label>
-                <input type="text" value={projForm.technologies} onChange={e => setProjForm(p => ({ ...p, technologies: e.target.value }))} className={inputCls} placeholder="React, Node.js" />
+                <label className="text-xs font-bold text-slate-755">Description</label>
+                <textarea value={projForm.description} onChange={e => setProjForm(p => ({ ...p, description: e.target.value }))} rows={2} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/10 resize-none transition-all hover:border-slate-355" />
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-500">GitHub URL</label>
-                <input type="url" value={projForm.githubUrl} onChange={e => setProjForm(p => ({ ...p, githubUrl: e.target.value }))} className={inputCls} />
+                <label className="text-xs font-bold text-slate-755">Achievements (one per line)</label>
+                <textarea value={projForm.achievements} onChange={e => setProjForm(p => ({ ...p, achievements: e.target.value }))} rows={2} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/10 resize-none transition-all hover:border-slate-355" />
               </div>
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-500">Live URL</label>
-                <input type="url" value={projForm.liveUrl} onChange={e => setProjForm(p => ({ ...p, liveUrl: e.target.value }))} className={inputCls} />
+                <label className="text-xs font-bold text-slate-755">Impact Metrics (one per line)</label>
+                <textarea value={projForm.impactMetrics} onChange={e => setProjForm(p => ({ ...p, impactMetrics: e.target.value }))} rows={2} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/10 resize-none transition-all hover:border-slate-355" placeholder="Processed $5000+ transactions..." />
               </div>
             </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-slate-500">Description</label>
-              <textarea value={projForm.description} onChange={e => setProjForm(p => ({ ...p, description: e.target.value }))} rows={2} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 resize-none transition-all" />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-slate-500">Achievements (one per line)</label>
-              <textarea value={projForm.achievements} onChange={e => setProjForm(p => ({ ...p, achievements: e.target.value }))} rows={2} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 resize-none transition-all" />
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-slate-500">Impact Metrics (one per line)</label>
-              <textarea value={projForm.impactMetrics} onChange={e => setProjForm(p => ({ ...p, impactMetrics: e.target.value }))} rows={2} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 resize-none transition-all" placeholder="Processed $5000+ transactions..." />
-            </div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
-              <button type="button" onClick={() => setIsProjModalOpen(false)} className="px-4 py-2 bg-white border border-slate-200 text-slate-600 text-sm font-medium rounded-xl hover:bg-slate-50 transition-all">Cancel</button>
-              <button type="submit" className="px-5 py-2 bg-brand-600 text-white text-sm font-semibold rounded-xl hover:bg-brand-500 transition-all">Save Project</button>
+            
+            {/* Footer */}
+            <div className="px-6 py-4 border-t border-slate-100 flex justify-end gap-2 bg-slate-50 shrink-0">
+              <button type="button" onClick={() => setIsProjModalOpen(false)} className="px-4 py-2 border border-slate-200 text-slate-600 text-xs font-semibold rounded-lg hover:bg-slate-100 transition-all bg-white">Cancel</button>
+              <button type="submit" className="px-5 py-2 bg-brand-600 text-white text-xs font-semibold rounded-lg hover:bg-brand-500 transition-all">Save Project</button>
             </div>
           </form>
         </div>
-      )}
+      , document.body)}
 
-      {/* Education Modal */}
-      {isEduModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setIsEduModalOpen(false)} />
-          <form onSubmit={handleSaveEducation} className="relative w-full max-w-lg bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between">
-              <h4 className="text-base font-semibold text-slate-800">{editingEdu ? 'Edit Education' : 'Add Education'}</h4>
+      {/* Education Drawer */}
+      {isEduModalOpen && createPortal(
+        <div className="fixed inset-0 z-[9999] flex justify-end">
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-slate-900/20 backdrop-blur-xs transition-opacity duration-300" onClick={() => setIsEduModalOpen(false)} />
+          
+          {/* Drawer Body */}
+          <form onSubmit={handleSaveEducation} className="relative w-full max-w-md h-full bg-white border-l border-slate-100 shadow-2xl flex flex-col animate-slide-left z-10">
+            {/* Header */}
+            <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between shrink-0">
+              <h4 className="text-sm font-bold text-slate-800">{editingEdu ? 'Edit Education' : 'Add Education'}</h4>
               <button type="button" onClick={() => setIsEduModalOpen(false)} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all">
                 <X size={16} />
               </button>
             </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-slate-500">School / University</label>
-              <input type="text" value={eduForm.school} onChange={e => setEduForm(p => ({ ...p, school: e.target.value }))} className={inputCls} required />
+            
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-755">School / University *</label>
+                <input type="text" value={eduForm.school} onChange={e => setEduForm(p => ({ ...p, school: e.target.value }))} className={inputCls} placeholder="e.g. Stanford University" required />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-755">Degree *</label>
+                  <input type="text" value={eduForm.degree} onChange={e => setEduForm(p => ({ ...p, degree: e.target.value }))} className={inputCls} placeholder="Bachelor of Science" required />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-755">Field of Study</label>
+                  <input type="text" value={eduForm.fieldOfStudy} onChange={e => setEduForm(p => ({ ...p, fieldOfStudy: e.target.value }))} className={inputCls} placeholder="Computer Science" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-755">Start Year</label>
+                  <input type="text" value={eduForm.startDate} onChange={e => setEduForm(p => ({ ...p, startDate: e.target.value }))} className={inputCls} placeholder="2020" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-755">End Year</label>
+                  <input type="text" value={eduForm.endDate} onChange={e => setEduForm(p => ({ ...p, endDate: e.target.value }))} className={inputCls} placeholder="2024" />
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-755">Description</label>
+                <textarea value={eduForm.description} onChange={e => setEduForm(p => ({ ...p, description: e.target.value }))} rows={2} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/10 resize-none transition-all hover:border-slate-355" />
+              </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-500">Degree</label>
-                <input type="text" value={eduForm.degree} onChange={e => setEduForm(p => ({ ...p, degree: e.target.value }))} className={inputCls} placeholder="Bachelor of Science" required />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-500">Field of Study</label>
-                <input type="text" value={eduForm.fieldOfStudy} onChange={e => setEduForm(p => ({ ...p, fieldOfStudy: e.target.value }))} className={inputCls} placeholder="Computer Science" />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-500">Start Year</label>
-                <input type="text" value={eduForm.startDate} onChange={e => setEduForm(p => ({ ...p, startDate: e.target.value }))} className={inputCls} placeholder="2020" />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-500">End Year</label>
-                <input type="text" value={eduForm.endDate} onChange={e => setEduForm(p => ({ ...p, endDate: e.target.value }))} className={inputCls} placeholder="2024" />
-              </div>
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-slate-500">Description</label>
-              <textarea value={eduForm.description} onChange={e => setEduForm(p => ({ ...p, description: e.target.value }))} rows={2} className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 resize-none transition-all" />
-            </div>
-            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
-              <button type="button" onClick={() => setIsEduModalOpen(false)} className="px-4 py-2 bg-white border border-slate-200 text-slate-600 text-sm font-medium rounded-xl hover:bg-slate-50 transition-all">Cancel</button>
-              <button type="submit" className="px-5 py-2 bg-brand-600 text-white text-sm font-semibold rounded-xl hover:bg-brand-500 transition-all">Save Education</button>
+            
+            {/* Footer */}
+            <div className="px-6 py-4 border-t border-slate-100 flex justify-end gap-2 bg-slate-50 shrink-0">
+              <button type="button" onClick={() => setIsEduModalOpen(false)} className="px-4 py-2 border border-slate-200 text-slate-600 text-xs font-semibold rounded-lg hover:bg-slate-100 transition-all bg-white">Cancel</button>
+              <button type="submit" className="px-5 py-2 bg-brand-600 text-white text-xs font-semibold rounded-lg hover:bg-brand-500 transition-all">Save Education</button>
             </div>
           </form>
         </div>
-      )}
+      , document.body)}
 
     </div>
   );

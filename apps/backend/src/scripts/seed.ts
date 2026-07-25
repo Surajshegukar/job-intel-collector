@@ -154,6 +154,7 @@ async function seed() {
       name: 'Suraj Shegukar',
       email: 'suraj@example.com',
       password: hashedPassword,
+      isOnboarded: true,
       education: [
         {
           school: 'Boston University',
@@ -204,7 +205,7 @@ async function seed() {
     console.log('Inserting jobs and processing stats...');
     // We will use JobProcessingService to process, which updates company and skill stats automatically
     for (const jobData of MOCK_JOBS) {
-      await JobProcessingService.processAndSaveJob(jobData as any);
+      await JobProcessingService.processAndSaveJob(jobData as any, defaultUser._id.toString());
     }
     console.log(`Seeded ${MOCK_JOBS.length} jobs.`);
 
@@ -213,6 +214,7 @@ async function seed() {
       const comp = await Company.findOne({ name: postData.companyName });
       if (comp) {
         const postDoc = new HiringPost({
+          userId: defaultUser._id,
           companyId: comp._id,
           author: postData.author,
           source: postData.source,

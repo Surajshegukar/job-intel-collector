@@ -73,7 +73,7 @@ export default function Header() {
   // };
 
   return (
-    <header className="sticky top-0 z-20 bg-white border-b border-slate-100">
+    <header className="sticky top-0 z-30 bg-white border-b border-slate-100">
         
       <div className="flex items-center justify-between px-8 py-4">
 
@@ -165,7 +165,7 @@ export default function Header() {
               </div>
               <div className="text-left hidden lg:block">
                 <p className="text-sm font-semibold text-slate-700 leading-none">{user?.name || 'User'}</p>
-                <p className="text-xs text-slate-400 mt-0.5">Free Plan</p>
+                {/* <p className="text-xs text-slate-400 mt-0.5">Free Plan</p> */}
               </div>
               <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${showProfileMenu ? 'rotate-180' : ''}`} />
             </button>
@@ -183,7 +183,7 @@ export default function Header() {
                       <p className="text-xs text-slate-500 truncate">{user?.email || 'user@example.com'}</p>
                     </div>
                   </div>
-                  <div className="mt-3 px-3 py-2 bg-brand-50 border border-brand-100 rounded-lg">
+                  {/* <div className="mt-3 px-3 py-2 bg-brand-50 border border-brand-100 rounded-lg">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-medium text-brand-700">Free Plan</span>
                       <button className="text-xs font-semibold text-brand-600 hover:text-brand-700">
@@ -194,7 +194,7 @@ export default function Header() {
                       <div className="h-full w-3/4 bg-gradient-to-r from-brand-500 to-indigo-500 rounded-full" />
                     </div>
                     <p className="text-[10px] text-brand-600 mt-1.5">15 of 20 AI credits used</p>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="py-2">

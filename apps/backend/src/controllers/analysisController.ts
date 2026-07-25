@@ -14,7 +14,7 @@ export const getAnalysis = async (req: AuthenticatedRequest, res: Response) => {
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const job = await Job.findById(id).populate('companyId');
+    const job = await Job.findOne({ _id: id, userId }).populate('companyId');
     if (!job) {
       return res.status(404).json({ message: 'Job not found' });
     }
@@ -45,7 +45,7 @@ export const triggerAnalysis = async (req: AuthenticatedRequest, res: Response) 
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const job = await Job.findById(id);
+    const job = await Job.findOne({ _id: id, userId });
     if (!job) {
       return res.status(404).json({ message: 'Job not found' });
     }
@@ -71,6 +71,12 @@ export const getMatchDetails = async (req: AuthenticatedRequest, res: Response) 
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
+    // Verify job belongs to this user
+    const job = await Job.findOne({ _id: id, userId });
+    if (!job) {
+      return res.status(404).json({ message: 'Job not found' });
+    }
+
     const analysis = await JobAnalysis.findOne({ jobId: id, userId });
     if (!analysis) {
       return res.status(404).json({ message: 'Analysis not found yet. Try again shortly.' });
@@ -94,6 +100,12 @@ export const getInterviewPrep = async (req: AuthenticatedRequest, res: Response)
 
     if (!userId) {
       return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    // Verify job belongs to this user
+    const job = await Job.findOne({ _id: id, userId });
+    if (!job) {
+      return res.status(404).json({ message: 'Job not found' });
     }
 
     // Attempt to load from dedicated prep schema first

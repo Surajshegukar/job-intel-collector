@@ -140,7 +140,7 @@ export const updateProfileData = async (req: AuthenticatedRequest, res: Response
 
     const { 
       preferredRoles, preferredLocations, salaryExpectation, 
-      githubUrl, linkedinUrl, name, phone, location, portfolioUrl, summary 
+      githubUrl, linkedinUrl, name, phone, location, portfolioUrl, summary, noticePeriod 
     } = req.body;
 
     const profile = await UserProfile.findOne({ userId });
@@ -156,6 +156,7 @@ export const updateProfileData = async (req: AuthenticatedRequest, res: Response
     if (location !== undefined) profile.location = location;
     if (portfolioUrl !== undefined) profile.portfolioUrl = portfolioUrl;
     if (summary !== undefined) profile.summary = summary;
+    if (noticePeriod !== undefined) (profile as any).noticePeriod = noticePeriod;
 
     await profile.save();
     return res.json({ message: 'Profile details updated successfully', profile });
