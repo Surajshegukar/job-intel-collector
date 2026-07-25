@@ -379,36 +379,7 @@ export default function Overview() {
         </div>
 
         {/* Job Search Completion Status Card */}
-        <div className="glass-card p-5 flex flex-col justify-between bg-gradient-to-br from-white to-blue-50/20">
-          <div>
-            <h2 className="text-sm font-bold text-slate-700">Target Profile Health</h2>
-            <p className="text-[11px] text-secondary mt-0.5">Evaluation of your current search configuration</p>
-          </div>
-
-          <div className="my-5 flex flex-col items-center justify-center relative">
-            {/* Completion Circular graphic */}
-            <div className="w-24 h-24 rounded-full border-8 border-slate-100 flex items-center justify-center relative">
-              <div className="absolute inset-0 rounded-full border-8 border-brand-600 border-t-transparent border-r-transparent animate-spin duration-[8s]" />
-              <div className="text-center">
-                <span className="text-2xl font-black text-slate-800">82%</span>
-                <p className="text-[8px] text-slate-400 font-bold uppercase tracking-wider">Health</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <div className="p-2.5 bg-white border border-slate-100 rounded-xl text-[10px] text-slate-500 leading-normal">
-              <span className="font-bold text-slate-700 block mb-0.5">💡 Pro Tip</span>
-              Import 3 more jobs with full descriptions to improve ATS scoring correlation accuracy!
-            </div>
-            <button
-              onClick={() => navigate('/resume-builder')}
-              className="w-full py-2 bg-brand-600 hover:bg-brand-700 text-white text-[10px] font-bold uppercase tracking-wider rounded-xl hover:shadow-lg hover:shadow-brand-600/10 active:scale-95 transition-all text-center"
-            >
-              Optimize Resume Now
-            </button>
-          </div>
-        </div>
+         
       </div>
     </div>
   );
