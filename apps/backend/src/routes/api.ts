@@ -28,6 +28,14 @@ router.get('/auth/profile', authMiddleware, authController.getProfile);
 router.put('/auth/profile', authMiddleware, authController.updateProfile);
 router.get('/auth/profile/ai-suggestions/:jobId', authMiddleware, authController.getAISuggestions);
 
+// Google OAuth
+router.get('/auth/google', authController.googleAuth);
+router.get('/auth/google/callback', authController.googleCallback);
+
+// GitHub OAuth
+router.get('/auth/github', authController.githubAuth);
+router.get('/auth/github/callback', authController.githubCallback);
+
 // Jobs CRUD routes
 // GET /api/jobs and GET /api/jobs/:id are open for read (or protected, we'll protect for standard auth setup)
 router.get('/jobs', authMiddleware, jobsController.getJobs);

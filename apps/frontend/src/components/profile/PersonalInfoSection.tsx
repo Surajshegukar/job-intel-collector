@@ -39,8 +39,6 @@ function InputField({
   );
 }
 
-const plainInputCls = 'w-full h-[42px] px-4 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 hover:border-slate-300';
-
 export default function PersonalInfoSection({
   profile, updateProfile, saveSuccess, setSaveSuccess,
 }: PersonalInfoSectionProps) {
@@ -120,48 +118,6 @@ export default function PersonalInfoSection({
             <InputField label="GitHub Profile"    icon={GithubIcon}  value={fields.githubUrl}    onChange={set('githubUrl')}    placeholder="https://github.com/username" type="url" />
             <InputField label="Notice Period"     icon={Clock}       value={fields.noticePeriod} onChange={set('noticePeriod')} placeholder="30 days / Immediate" />
             <InputField label="Email Address"     icon={Mail}        value={profile.email || ''} onChange={() => {}}            placeholder="alex@example.com" type="email" />
-          </div>
-
-          <div className="border-t border-slate-100" />
-
-          {/* Job Preferences */}
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-sm font-semibold text-slate-700">Job Preferences</h3>
-              <p className="text-xs text-slate-400 mt-0.5">Used to tailor job recommendations and match scores.</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-slate-500">Preferred Roles <span className="text-slate-400">(comma-separated)</span></label>
-                <input type="text" value={fields.preferredRoles} onChange={e => set('preferredRoles')(e.target.value)} placeholder="Full-Stack Developer, Frontend Engineer" className={plainInputCls} />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-slate-500">Preferred Locations <span className="text-slate-400">(comma-separated)</span></label>
-                <input type="text" value={fields.preferredLocations} onChange={e => set('preferredLocations')(e.target.value)} placeholder="New York, Remote" className={plainInputCls} />
-              </div>
-            </div>
-          </div>
-
-          {/* Salary */}
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-sm font-semibold text-slate-700">Salary Expectation</h3>
-              <p className="text-xs text-slate-400 mt-0.5">Shared only with matched employers based on your settings.</p>
-            </div>
-            <div className="grid grid-cols-3 gap-x-6 gap-y-5">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-slate-500">Minimum</label>
-                <input type="number" value={fields.salaryMin} onChange={e => set('salaryMin')(e.target.value)} placeholder="60000" className={plainInputCls} />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-slate-500">Maximum</label>
-                <input type="number" value={fields.salaryMax} onChange={e => set('salaryMax')(e.target.value)} placeholder="120000" className={plainInputCls} />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-slate-500">Currency</label>
-                <input type="text" value={fields.salaryCurrency} onChange={e => set('salaryCurrency')(e.target.value)} placeholder="USD" className={plainInputCls} />
-              </div>
-            </div>
           </div>
 
           {/* Footer */}

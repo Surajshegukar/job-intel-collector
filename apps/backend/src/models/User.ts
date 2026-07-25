@@ -28,7 +28,11 @@ const ProjectSchema = new Schema({
 const UserSchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  password: { type: String },
+  provider: { type: String, default: 'local' },
+  googleId: { type: String },
+  githubId: { type: String },
+  isOnboarded: { type: Boolean, default: false },
   education: [EducationSchema],
   experience: [ExperienceSchema],
   projects: [ProjectSchema],

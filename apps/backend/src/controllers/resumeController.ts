@@ -18,7 +18,7 @@ import { ResumeScoringEngine } from '../ai/services/ResumeScoringEngine';
 import { SkillTaxonomyService } from '../ai/services/SkillTaxonomyService';
 import { ProjectIntelligenceEngine } from '../ai/services/ProjectIntelligenceEngine';
 
-const pdfParse = require('pdf-parse');
+const { PDFParse } = require('pdf-parse');
 import mammoth from 'mammoth';
 
 export const importResume = async (req: AuthenticatedRequest, res: Response) => {
@@ -36,8 +36,9 @@ export const importResume = async (req: AuthenticatedRequest, res: Response) => 
     const fileExtension = req.file.originalname.split('.').pop()?.toLowerCase();
 
     if (fileExtension === 'pdf') {
-      const data = await (pdfParse as any)(req.file.buffer);
-      extractedText = data.text;
+      const parser = new PDFParse({ data: req.file.buffer });
+      const pdfData = await parser.getText();
+      extractedText = pdfData.text;
     } else if (fileExtension === 'docx') {
       const result = await mammoth.extractRawText({ buffer: req.file.buffer });
       extractedText = result.value;

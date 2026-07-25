@@ -1,11 +1,12 @@
 import { useState, useRef } from 'react';
 import {
   UserCircle, Briefcase, GraduationCap, FolderOpen, Award, Code,
-  X, AlertCircle, UploadCloud, Loader2
+  X, AlertCircle, UploadCloud, Loader2, Target
 } from 'lucide-react';
 import ProfileHero from '../components/ProfileHero';
 import ProfileStats from '../components/ProfileStats';
 import PersonalInfoSection from '../components/profile/PersonalInfoSection';
+import CareerTargetsSection from '../components/profile/CareerTargetsSection';
 import SkillsSection from '../components/profile/SkillsSection';
 import ExperienceSection from '../components/profile/ExperienceSection';
 import ProjectsSection from '../components/profile/ProjectsSection';
@@ -22,10 +23,11 @@ import {
   useAddAchievement, useDeleteAchievement
 } from '../api/hooks';
 
-type Tab = 'info' | 'skills' | 'experience' | 'education' | 'projects' | 'credentials';
+type Tab = 'info' | 'targets' | 'skills' | 'experience' | 'education' | 'projects' | 'credentials';
 
 const TABS: { id: Tab; label: string; icon: any }[] = [
   { id: 'info',        label: 'Personal Info',  icon: UserCircle },
+  { id: 'targets',     label: 'Career Targets', icon: Target },
   { id: 'experience',  label: 'Experience',     icon: Briefcase },
   { id: 'projects',    label: 'Projects',       icon: FolderOpen },
   { id: 'skills',      label: 'Skills',         icon: Code },
@@ -85,7 +87,7 @@ export default function Profile() {
     school: '', degree: '', fieldOfStudy: '', startDate: '', endDate: '', description: ''
   });
 
-  const [newSkill, setNewSkill] = useState({ skillName: '', proficiency: 'intermediate', yearsOfExperience: 1, category: '' });
+  const [newSkill, setNewSkill] = useState({ skillName: '', category: '' });
   const [newCert, setNewCert] = useState({ name: '', issuer: '', issueDate: '', credentialUrl: '' });
   const [newAch, setNewAch] = useState({ title: '', description: '', category: '' });
 
@@ -259,6 +261,9 @@ export default function Profile() {
       <div className="space-y-4 pb-8">
         {activeTab === 'info' && (
           <PersonalInfoSection profile={profile} updateProfile={updateProfile} saveSuccess={saveSuccess} setSaveSuccess={setSaveSuccess} />
+        )}
+        {activeTab === 'targets' && (
+          <CareerTargetsSection profile={profile} updateProfile={updateProfile} saveSuccess={saveSuccess} setSaveSuccess={setSaveSuccess} />
         )}
         {activeTab === 'skills' && (
           <SkillsSection skills={skills} addSkill={addSkill} deleteSkill={deleteSkill} newSkill={newSkill} setNewSkill={setNewSkill} />

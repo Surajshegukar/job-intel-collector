@@ -2,11 +2,18 @@ import { Request, Response } from 'express';
 import { Company } from '../models/Company';
 import { Job } from '../models/Job';
 import { CompanyService } from '../services/CompanyService';
+import { AuthenticatedRequest } from '../middleware/auth';
 
 export const getCompanies = async (req: Request, res: Response) => {
   try {
+    const userId = (req as AuthenticatedRequest).user?.id;
+    if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+
+    // Find all distinct companyIds of the user's jobs
+    const userCompanyIds = await Job.find({ userId }).distinct('companyId');
+
     const search = req.query.search as string;
-    const query: any = {};
+    const query: any = { _id: { $in: userCompanyIds } };
 
     if (search) {
       query.name = { $regex: search, $options: 'i' };
@@ -21,13 +28,16 @@ export const getCompanies = async (req: Request, res: Response) => {
 
 export const getCompanyById = async (req: Request, res: Response) => {
   try {
+    const userId = (req as AuthenticatedRequest).user?.id;
+    if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+
     const company = await Company.findById(req.params.id);
     if (!company) {
       return res.status(404).json({ message: 'Company not found' });
     }
 
-    // Fetch jobs associated with this company
-    const jobs = await Job.find({ companyId: company._id }).sort({ createdAt: -1 });
+    // Fetch jobs associated with this company that belong to this user
+    const jobs = await Job.find({ companyId: company._id, userId }).sort({ createdAt: -1 });
 
     return res.json({
       company,

@@ -4,6 +4,9 @@ import { useAuthStore } from './store/authStore';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Login from './pages/Login';
+import AuthCallback from './pages/AuthCallback';
+import Onboarding from './pages/Onboarding';
+import { Loader2 } from 'lucide-react';
 import Overview from './pages/Overview';
 import Jobs from './pages/Jobs/index';
 import Companies from './pages/Companies/index';
@@ -31,11 +34,31 @@ function DashboardLayout() {
 }
 
 function RequireAuth() {
-  const { isAuthenticated, token } = useAuthStore();
+  const { isAuthenticated, token, user } = useAuthStore();
   if (!isAuthenticated && !token) {
     return <Navigate to="/login" replace />;
   }
+  if (token && !user) {
+    return null;
+  }
+  if (user && !user.isOnboarded) {
+    return <Navigate to="/onboarding" replace />;
+  }
   return <DashboardLayout />;
+}
+
+function RequireOnboarding() {
+  const { isAuthenticated, token, user } = useAuthStore();
+  if (!isAuthenticated && !token) {
+    return <Navigate to="/login" replace />;
+  }
+  if (token && !user) {
+    return null;
+  }
+  if (user && user.isOnboarded) {
+    return <Navigate to="/overview" replace />;
+  }
+  return <Onboarding />;
 }
 
 function RequireGuest() {
@@ -47,16 +70,26 @@ function RequireGuest() {
 }
 
 export default function App() {
-  const { loadUser, token } = useAuthStore();
+  const { loadUser, token, isLoading, user } = useAuthStore();
 
   useEffect(() => {
     if (token) loadUser();
   }, []);
 
+  if (isLoading && !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <Loader2 className="h-10 w-10 animate-spin text-brand-600" />
+      </div>
+    );
+  }
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<RequireGuest />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
+        <Route path="/onboarding" element={<RequireOnboarding />} />
         <Route element={<RequireAuth />}>
           <Route path="/overview" element={<Overview />} />
           <Route path="/jobs" element={<Jobs />} />

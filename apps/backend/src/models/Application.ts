@@ -1,7 +1,8 @@
 import { Schema, model } from 'mongoose';
 
 const ApplicationSchema = new Schema({
-  jobId: { type: Schema.Types.ObjectId, ref: 'Job', required: true, unique: true },
+  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  jobId: { type: Schema.Types.ObjectId, ref: 'Job', required: true },
   status: { 
     type: String, 
     enum: ['Saved', 'Applied', 'Interview', 'Rejected', 'Offer'], 
@@ -16,5 +17,7 @@ const ApplicationSchema = new Schema({
 }, {
   timestamps: true
 });
+
+ApplicationSchema.index({ userId: 1, jobId: 1 }, { unique: true });
 
 export const Application = model('Application', ApplicationSchema);

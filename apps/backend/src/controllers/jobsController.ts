@@ -6,6 +6,9 @@ import { AuthenticatedRequest } from '../middleware/auth';
 
 export const getJobs = async (req: Request, res: Response) => {
   try {
+    const userId = (req as AuthenticatedRequest).user?.id;
+    if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const skip = (page - 1) * limit;
@@ -15,13 +18,18 @@ export const getJobs = async (req: Request, res: Response) => {
     const status = req.query.status as string;
     const source = req.query.source as string;
 
-    const query: any = {};
+    const query: any = { userId };
 
     // Text search on title/description
     if (search) {
-      query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } }
+      query.$and = [
+        { userId },
+        {
+          $or: [
+            { title: { $regex: search, $options: 'i' } },
+            { description: { $regex: search, $options: 'i' } }
+          ]
+        }
       ];
     }
 
@@ -57,7 +65,10 @@ export const getJobs = async (req: Request, res: Response) => {
 
 export const getJobById = async (req: Request, res: Response) => {
   try {
-    const job = await Job.findById(req.params.id).populate('companyId');
+    const userId = (req as AuthenticatedRequest).user?.id;
+    if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+
+    const job = await Job.findOne({ _id: req.params.id, userId }).populate('companyId');
     if (!job) {
       return res.status(404).json({ message: 'Job not found' });
     }
@@ -69,15 +80,15 @@ export const getJobById = async (req: Request, res: Response) => {
 
 export const createJob = async (req: Request, res: Response) => {
   try {
-    const result = await JobProcessingService.processAndSaveJob(req.body);
+    const userId = (req as AuthenticatedRequest).user?.id;
+    if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+
+    const result = await JobProcessingService.processAndSaveJob(req.body, userId);
     
     // Trigger background AI Analysis
-    const userId = (req as AuthenticatedRequest).user?.id;
-    if (userId) {
-      await AnalysisQueue.addJob(result.job._id.toString(), userId);
-    }
+    await AnalysisQueue.addJob(result.job._id.toString(), userId);
 
-    const jobWithCompany = await Job.findById(result.job._id).populate('companyId');
+    const jobWithCompany = await Job.findOne({ _id: result.job._id, userId }).populate('companyId');
     return res.status(201).json({
       message: `Job ${result.action} successfully`,
       action: result.action,
@@ -90,10 +101,12 @@ export const createJob = async (req: Request, res: Response) => {
 
 export const updateJob = async (req: Request, res: Response) => {
   try {
+    const userId = (req as AuthenticatedRequest).user?.id;
+    if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+
     const { title, location, salary, experience, description, skills, status } = req.body;
     
-    // We can fetch job first
-    const job = await Job.findById(req.params.id);
+    const job = await Job.findOne({ _id: req.params.id, userId });
     if (!job) {
       return res.status(404).json({ message: 'Job not found' });
     }
@@ -114,12 +127,11 @@ export const updateJob = async (req: Request, res: Response) => {
     await job.save();
 
     // Trigger AI analysis if description changes
-    const userId = (req as AuthenticatedRequest).user?.id;
-    if (needsReanalysis && userId) {
+    if (needsReanalysis) {
       await AnalysisQueue.addJob(job._id.toString(), userId);
     }
 
-    const jobWithCompany = await Job.findById(job._id).populate('companyId');
+    const jobWithCompany = await Job.findOne({ _id: job._id, userId }).populate('companyId');
     return res.json(jobWithCompany);
   } catch (error) {
     return res.status(500).json({ message: 'Server error', error: (error as Error).message });
@@ -128,7 +140,10 @@ export const updateJob = async (req: Request, res: Response) => {
 
 export const deleteJob = async (req: Request, res: Response) => {
   try {
-    await JobProcessingService.deleteJob(req.params.id);
+    const userId = (req as AuthenticatedRequest).user?.id;
+    if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+
+    await JobProcessingService.deleteJob(req.params.id, userId);
     return res.json({ message: 'Job and associated application deleted successfully' });
   } catch (error) {
     return res.status(500).json({ message: 'Server error', error: (error as Error).message });

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Bot, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { GoogleIcon, GithubIcon } from '../icons';
@@ -12,6 +12,8 @@ export default function Login() {
   const [showPw, setShowPw] = useState(false);
   const { login, register, isLoading, error } = useAuthStore();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const queryError = searchParams.get('error');
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -49,8 +51,7 @@ export default function Login() {
           <button
             type="button"
             onClick={() => {
-              // Stub for Google login demo
-              console.log('Google login triggered');
+              window.location.href = '/api/auth/google';
             }}
             className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-md hover:bg-slate-50 hover:border-slate-300 active:scale-95 transition-all text-xs font-semibold text-slate-900"
           >
@@ -59,8 +60,7 @@ export default function Login() {
           <button
             type="button"
             onClick={() => {
-              // Stub for GitHub login demo
-              console.log('GitHub login triggered');
+              window.location.href = '/api/auth/github';
             }}
             className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-md hover:bg-slate-50 hover:border-slate-300 active:scale-95 transition-all text-xs font-semibold text-slate-900"
           >
@@ -126,10 +126,10 @@ export default function Login() {
             </div>
           </div>
 
-          {error && (
+          {(error || queryError) && (
             <div className="flex items-center gap-2 px-3 py-2.5 bg-red-50 border border-red-100 rounded-md text-red-600 text-xs">
               <AlertCircle size={14} className="flex-shrink-0" />
-              {error}
+              <span className="break-words max-w-full">{error || queryError}</span>
             </div>
           )}
 
