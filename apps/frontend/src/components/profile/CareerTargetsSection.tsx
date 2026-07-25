@@ -8,7 +8,7 @@ interface CareerTargetsSectionProps {
   setSaveSuccess: (v: boolean) => void;
 }
 
-const plainInputCls = 'w-full h-[42px] px-4 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 hover:border-slate-300';
+const plainInputCls = 'w-full h-10 px-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/10 hover:border-slate-355';
 
 export default function CareerTargetsSection({
   profile, updateProfile, saveSuccess, setSaveSuccess,
@@ -91,7 +91,9 @@ export default function CareerTargetsSection({
             </div>
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-medium text-slate-500">Currency</label>
-              <input type="text" value={fields.salaryCurrency} onChange={e => set('salaryCurrency')(e.target.value)} placeholder="USD" className={plainInputCls} />
+              <select value={fields.salaryCurrency} onChange={e => set('salaryCurrency')(e.target.value)} className={`${plainInputCls} !py-1`}>
+                <option>USD</option><option>EUR</option><option>INR</option><option>GBP</option>
+              </select>
             </div>
           </div>
         </div>

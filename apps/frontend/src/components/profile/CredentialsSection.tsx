@@ -50,7 +50,7 @@ export default function CredentialsSection({
     setNewAch({ title: '', description: '', category: '' });
   }
 
-  const inputCls = 'w-full h-[42px] px-4 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 hover:border-slate-300';
+  const inputCls = 'w-full h-10 px-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/10 hover:border-slate-355';
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -93,7 +93,7 @@ export default function CredentialsSection({
             <button
               type="submit"
               disabled={addCertification.isPending}
-              className="w-full h-[38px] bg-brand-600 text-white text-xs font-semibold rounded-xl transition-all duration-200 hover:bg-brand-500 active:scale-95 flex items-center justify-center gap-2"
+              className="w-full h-10 bg-brand-600 text-white text-xs font-semibold rounded-lg transition-all duration-200 hover:bg-brand-500 active:scale-95 flex items-center justify-center gap-2"
             >
               <Plus size={12} /> Add Certification
             </button>
@@ -188,7 +188,7 @@ export default function CredentialsSection({
             <button
               type="submit"
               disabled={addAchievement.isPending}
-              className="w-full h-[38px] bg-brand-600 text-white text-xs font-semibold rounded-xl transition-all duration-200 hover:bg-brand-500 active:scale-95 flex items-center justify-center gap-2"
+              className="w-full h-10 bg-brand-600 text-white text-xs font-semibold rounded-lg transition-all duration-200 hover:bg-brand-500 active:scale-95 flex items-center justify-center gap-2"
             >
               <Plus size={12} /> Add Achievement
             </button>

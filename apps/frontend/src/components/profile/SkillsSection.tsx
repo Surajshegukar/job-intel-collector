@@ -72,7 +72,7 @@ export default function SkillsSection({
                 placeholder="e.g. TypeScript"
                 autoFocus
                 required
-                className="h-[42px] px-4 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200"
+                className="w-full h-10 px-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/10 transition-all duration-200 hover:border-slate-355"
               />
             </div>
 
@@ -81,7 +81,7 @@ export default function SkillsSection({
               <select
                 value={newSkill.category}
                 onChange={(e) => setNewSkill((p: any) => ({ ...p, category: e.target.value }))}
-                className="h-[42px] px-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 transition-all duration-200"
+                className="h-10 px-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 focus:outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/10 transition-all duration-200 hover:border-slate-355"
               >
                 <option value="">Select category</option>
                 {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
@@ -91,7 +91,7 @@ export default function SkillsSection({
               <button
                 type="submit"
                 disabled={addSkill.isPending}
-                className="h-[42px] px-5 bg-brand-600 text-white text-sm font-semibold rounded-xl transition-all duration-200 hover:bg-brand-500 active:scale-95 disabled:opacity-50 flex items-center gap-2"
+                className="h-10 px-5 bg-brand-600 text-white text-xs font-semibold rounded-lg transition-all duration-200 hover:bg-brand-500 active:scale-95 disabled:opacity-50 flex items-center gap-2"
               >
                 {addSkill.isPending ? <Loader2 size={13} className="animate-spin" /> : <Plus size={13} />}
                 Add
