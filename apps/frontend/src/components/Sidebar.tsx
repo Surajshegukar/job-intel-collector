@@ -18,7 +18,7 @@ const NAV_ITEMS = [
 
 export default function Sidebar() {
   return (
-    <aside className="fixed inset-y-0 left-0 z-4c w-64 flex flex-col bg-white border-r border-slate-100">
+    <aside className="fixed inset-y-0 left-0 z-40 w-64 flex flex-col bg-white border-r border-slate-100">
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-5 pb-0">
         {/* <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-brand-600 text-white mb-2 shadow-sm">

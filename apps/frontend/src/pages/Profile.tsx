@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import {
   UserCircle, Briefcase, GraduationCap, FolderOpen, Award, Code,
   X, AlertCircle, UploadCloud, Loader2, Target
@@ -288,8 +289,8 @@ export default function Profile() {
       </div>
 
       {/* Experience Drawer */}
-      {isExpModalOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end mt-0-imp">
+      {isExpModalOpen && createPortal(
+        <div className="fixed inset-0 z-[9999] flex justify-end">
           {/* Backdrop */}
           <div className="absolute inset-0 bg-slate-900/20 backdrop-blur-xs transition-opacity duration-300" onClick={() => setIsExpModalOpen(false)} />
           
@@ -350,11 +351,11 @@ export default function Profile() {
             </div>
           </form>
         </div>
-      )}
+      , document.body)}
 
       {/* Project Drawer */}
-      {isProjModalOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end mt-0-imp">
+      {isProjModalOpen && createPortal(
+        <div className="fixed inset-0 z-[9999] flex justify-end">
           {/* Backdrop */}
           <div className="absolute inset-0 bg-slate-900/20 backdrop-blur-xs transition-opacity duration-300" onClick={() => setIsProjModalOpen(false)} />
           
@@ -413,11 +414,11 @@ export default function Profile() {
             </div>
           </form>
         </div>
-      )}
+      , document.body)}
 
       {/* Education Drawer */}
-      {isEduModalOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end mt-0-imp">
+      {isEduModalOpen && createPortal(
+        <div className="fixed inset-0 z-[9999] flex justify-end">
           {/* Backdrop */}
           <div className="absolute inset-0 bg-slate-900/20 backdrop-blur-xs transition-opacity duration-300" onClick={() => setIsEduModalOpen(false)} />
           
@@ -468,7 +469,7 @@ export default function Profile() {
             </div>
           </form>
         </div>
-      )}
+      , document.body)}
 
     </div>
   );

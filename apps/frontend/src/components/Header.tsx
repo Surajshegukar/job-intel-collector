@@ -73,7 +73,7 @@ export default function Header() {
   // };
 
   return (
-    <header className="sticky top-0 z-2 bg-white border-b border-slate-100">
+    <header className="sticky top-0 z-30 bg-white border-b border-slate-100">
         
       <div className="flex items-center justify-between px-8 py-4">
 
