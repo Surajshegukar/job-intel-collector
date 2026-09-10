@@ -380,37 +380,37 @@ export default function Popup() {
   };
 
   return (
-    <div className="w-full bg-zinc-950 text-zinc-100 flex flex-col min-h-[500px]">
+    <div className="w-full bg-slate-50 text-slate-800 flex flex-col min-h-[500px] font-sans antialiased">
       {/* Header */}
-      <header className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-md sticky top-0 z-10">
+      <header className="flex items-center justify-between px-4 py-3 border-b border-slate-100 bg-white/90 backdrop-blur-md sticky top-0 z-10">
         <div className="flex items-center gap-2">
-          <Bookmark className="w-5 h-5 text-indigo-400 fill-indigo-400" />
-          <h1 className="font-semibold text-sm tracking-tight text-white">Job Intelligence</h1>
+          <Bookmark className="w-4 h-4 text-brand-600 fill-brand-600" />
+          <h1 className="font-bold text-sm tracking-tight text-slate-800">Intel<span className="text-brand-600">JET</span></h1>
           <button 
             type="button"
             onClick={() => setActiveTab('settings')}
-            className={`flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded border font-medium transition-colors ${
+            className={`flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded border font-semibold transition-colors ${
               syncStatus === 'connected' 
-                ? 'bg-emerald-950/40 text-emerald-400 border-emerald-900/60' 
+                ? 'bg-emerald-50 text-emerald-600 border-emerald-100/50' 
                 : syncStatus === 'disabled'
-                ? 'bg-zinc-800 text-zinc-500 border-zinc-700'
-                : 'bg-amber-950/40 text-amber-400 border-amber-900/60'
+                ? 'bg-slate-100 text-slate-500 border-slate-200/50'
+                : 'bg-amber-50 text-amber-600 border-amber-100/50'
             }`}
             title="Click to configure Cloud Sync"
           >
             {syncStatus === 'connected' ? (
               <>
-                <Cloud className="w-3 h-3 text-emerald-400 shrink-0" />
+                <Cloud className="w-3 h-3 text-emerald-500 shrink-0" />
                 <span>Synced</span>
               </>
             ) : syncStatus === 'disabled' ? (
               <>
-                <CloudOff className="w-3 h-3 text-zinc-500 shrink-0" />
+                <CloudOff className="w-3 h-3 text-slate-400 shrink-0" />
                 <span>Sync Off</span>
               </>
             ) : (
               <>
-                <CloudOff className="w-3 h-3 text-amber-400 shrink-0" />
+                <CloudOff className="w-3 h-3 text-amber-500 shrink-0" />
                 <span>Local-Only</span>
               </>
             )}
@@ -421,7 +421,7 @@ export default function Popup() {
             type="button"
             onClick={scrapePage}
             title="Refresh Scraper"
-            className="p-1.5 hover:bg-zinc-800 rounded transition-colors text-zinc-400 hover:text-white"
+            className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors text-slate-500 hover:text-slate-800"
           >
             <RotateCw className="w-3.5 h-3.5" />
           </button>
@@ -429,10 +429,10 @@ export default function Popup() {
             type="button"
             onClick={() => setActiveTab(activeTab === 'settings' ? 'job' : 'settings')}
             title="Cloud Sync Settings"
-            className={`p-1.5 rounded transition-colors ${
+            className={`p-1.5 rounded-lg transition-colors ${
               activeTab === 'settings' 
-                ? 'bg-zinc-800 text-white' 
-                : 'hover:bg-zinc-800 text-zinc-400 hover:text-white'
+                ? 'bg-slate-100 text-slate-850' 
+                : 'hover:bg-slate-100 text-slate-500 hover:text-slate-850'
             }`}
           >
             <Settings className="w-3.5 h-3.5" />
@@ -441,9 +441,9 @@ export default function Popup() {
             type="button"
             onClick={openDashboard}
             title="Open Dashboard"
-            className="p-1.5 hover:bg-zinc-800 rounded transition-colors text-zinc-400 hover:text-white"
+            className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors text-slate-500 hover:text-slate-850"
           >
-            <ExternalLink className="w-4 h-4" />
+            <ExternalLink className="w-3.5 h-3.5" />
           </button>
         </div>
       </header>
@@ -451,31 +451,33 @@ export default function Popup() {
       {/* Main Area */}
       {loading ? (
         <div className="flex-1 flex flex-col items-center justify-center py-10 gap-3">
-          <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
-          <p className="text-xs text-zinc-400">Scraping page details...</p>
+          <Loader2 className="w-8 h-8 text-brand-600 animate-spin" />
+          <p className="text-xs text-slate-500">Scraping page details...</p>
         </div>
       ) : (
         <div className="p-4 flex-1 flex flex-col">
           {/* Notifications */}
           {successMsg && (
-            <div className="mb-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-3 py-2 rounded-lg text-xs flex items-center gap-2">
+            <div className="mb-4 bg-emerald-50 border border-emerald-100 text-emerald-600 px-3 py-2 rounded-xl text-xs flex items-center gap-2 animate-fade-in">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
               <span>{successMsg}</span>
             </div>
           )}
           {errorMsg && (
-            <div className="mb-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 px-3 py-2 rounded-lg text-xs flex items-center gap-2">
+            <div className="mb-4 bg-red-50 border border-red-100 text-red-600 px-3 py-2 rounded-xl text-xs flex items-center gap-2 animate-fade-in">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           {/* Segmented Tab Controllers */}
-          <div className="grid grid-cols-4 gap-1 p-1 bg-zinc-900 rounded-lg border border-zinc-800 mb-4">
+          <div className="grid grid-cols-4 gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200/40 mb-4">
             <button
               onClick={() => { setActiveTab('job'); setErrorMsg(null); }}
-              className={`flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-medium transition-all ${
-                activeTab === 'job' ? 'bg-zinc-800 text-white shadow-sm' : 'text-zinc-400 hover:text-zinc-200'
+              className={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                activeTab === 'job' 
+                  ? 'bg-white text-brand-600 shadow-sm border border-slate-200/30' 
+                  : 'text-slate-500 hover:text-slate-800 hover:bg-white/50'
               }`}
             >
               <Briefcase className="w-3.5 h-3.5" />
@@ -483,8 +485,10 @@ export default function Popup() {
             </button>
             <button
               onClick={() => { setActiveTab('company'); setErrorMsg(null); }}
-              className={`flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-medium transition-all ${
-                activeTab === 'company' ? 'bg-zinc-800 text-white shadow-sm' : 'text-zinc-400 hover:text-zinc-200'
+              className={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                activeTab === 'company' 
+                  ? 'bg-white text-brand-600 shadow-sm border border-slate-200/30' 
+                  : 'text-slate-500 hover:text-slate-800 hover:bg-white/50'
               }`}
             >
               <Building2 className="w-3.5 h-3.5" />
@@ -492,8 +496,10 @@ export default function Popup() {
             </button>
             <button
               onClick={() => { setActiveTab('post'); setErrorMsg(null); }}
-              className={`flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-medium transition-all ${
-                activeTab === 'post' ? 'bg-zinc-800 text-white shadow-sm' : 'text-zinc-400 hover:text-zinc-200'
+              className={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                activeTab === 'post' 
+                  ? 'bg-white text-brand-600 shadow-sm border border-slate-200/30' 
+                  : 'text-slate-500 hover:text-slate-800 hover:bg-white/50'
               }`}
             >
               <FileText className="w-3.5 h-3.5" />
@@ -501,8 +507,10 @@ export default function Popup() {
             </button>
             <button
               onClick={() => { setActiveTab('settings'); setErrorMsg(null); }}
-              className={`flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-medium transition-all ${
-                activeTab === 'settings' ? 'bg-zinc-800 text-white shadow-sm' : 'text-zinc-400 hover:text-zinc-200'
+              className={`flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                activeTab === 'settings' 
+                  ? 'bg-white text-brand-600 shadow-sm border border-slate-200/30' 
+                  : 'text-slate-500 hover:text-slate-800 hover:bg-white/50'
               }`}
             >
               <Settings className="w-3.5 h-3.5" />
@@ -515,64 +523,64 @@ export default function Popup() {
             {activeTab === 'job' && (
               <div className="space-y-3 flex-1">
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Job Title *</label>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Job Title *</label>
                   <input
                     type="text"
                     value={jobForm.title}
                     onChange={e => setJobForm(prev => ({ ...prev, title: e.target.value }))}
-                    className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700"
+                    className="input-field"
                     placeholder="Software Development Engineer"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Company *</label>
+                    <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Company *</label>
                     <input
                       type="text"
                       value={jobForm.company}
                       onChange={e => setJobForm(prev => ({ ...prev, company: e.target.value }))}
-                      className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700"
+                      className="input-field"
                       placeholder="Company Name"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Location</label>
+                    <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Location</label>
                     <input
                       type="text"
                       value={jobForm.location}
                       onChange={e => setJobForm(prev => ({ ...prev, location: e.target.value }))}
-                      className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700"
+                      className="input-field"
                       placeholder="Remote / San Francisco"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Experience</label>
+                    <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Experience</label>
                     <input
                       type="text"
                       value={jobForm.experience}
                       onChange={e => setJobForm(prev => ({ ...prev, experience: e.target.value }))}
-                      className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700"
+                      className="input-field"
                       placeholder="2-4 yrs"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Salary</label>
+                    <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Salary</label>
                     <input
                       type="text"
                       value={jobForm.salary}
                       onChange={e => setJobForm(prev => ({ ...prev, salary: e.target.value }))}
-                      className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700"
+                      className="input-field"
                       placeholder="$120k - $140k"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Type</label>
+                    <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Type</label>
                     <select
                       value={jobForm.employmentType}
                       onChange={e => setJobForm(prev => ({ ...prev, employmentType: e.target.value }))}
-                      className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700"
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-slate-800 text-xs focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 transition-all"
                     >
                       <option value="Full-time">Full-time</option>
                       <option value="Part-time">Part-time</option>
@@ -584,15 +592,15 @@ export default function Popup() {
 
                 {/* Skills Section */}
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Extracted Skills</label>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Extracted Skills</label>
                   <div className="flex flex-wrap gap-1 mb-1.5">
                     {jobForm.skills?.map(skill => (
-                      <span key={skill} className="bg-zinc-800 text-zinc-300 text-[10px] px-2 py-0.5 rounded border border-zinc-700 flex items-center gap-1">
+                      <span key={skill} className="bg-slate-100 text-slate-600 text-[10px] px-2 py-0.5 rounded-lg border border-slate-200 flex items-center gap-1">
                         {skill}
-                        <button type="button" onClick={() => removeSkill(skill)} className="hover:text-rose-400">×</button>
+                        <button type="button" onClick={() => removeSkill(skill)} className="hover:text-rose-600 font-bold">×</button>
                       </span>
                     ))}
-                    {jobForm.skills?.length === 0 && <span className="text-[10px] text-zinc-600">No skills parsed yet</span>}
+                    {jobForm.skills?.length === 0 && <span className="text-[10px] text-slate-400">No skills parsed yet</span>}
                   </div>
                   <div className="flex gap-1.5">
                     <input
@@ -600,21 +608,21 @@ export default function Popup() {
                       value={skillInput}
                       onChange={e => setSkillInput(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addSkill(); } }}
-                      className="flex-1 text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1 text-zinc-100 focus:outline-none"
+                      className="flex-1 px-3 py-1 bg-white border border-slate-200 rounded-xl text-slate-850 placeholder-slate-400 text-xs focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 transition-all"
                       placeholder="Add tech skill (e.g. AWS)"
                     />
-                    <button type="button" onClick={addSkill} className="bg-zinc-800 hover:bg-zinc-700 text-xs px-2.5 py-1 rounded">Add</button>
+                    <button type="button" onClick={addSkill} className="bg-slate-200 hover:bg-slate-350 border border-slate-300/40 text-slate-700 text-xs px-3 py-1.5 rounded-xl font-semibold transition-colors">Add</button>
                   </div>
                 </div>
 
                 {/* Tags Section */}
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Tags (For organizing)</label>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Tags (For organizing)</label>
                   <div className="flex flex-wrap gap-1 mb-1.5">
                     {jobForm.tags?.map(t => (
-                      <span key={t} className="bg-indigo-950/40 text-indigo-300 text-[10px] px-2 py-0.5 rounded border border-indigo-900/60 flex items-center gap-1">
+                      <span key={t} className="bg-brand-50 text-brand-600 text-[10px] px-2 py-0.5 rounded-lg border border-brand-100/50 flex items-center gap-1">
                         {t}
-                        <button type="button" onClick={() => removeTag('job', t)} className="hover:text-rose-400">×</button>
+                        <button type="button" onClick={() => removeTag('job', t)} className="hover:text-rose-600 font-bold">×</button>
                       </span>
                     ))}
                   </div>
@@ -624,46 +632,46 @@ export default function Popup() {
                       value={tagInput}
                       onChange={e => setTagInput(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addTag('job'); } }}
-                      className="flex-1 text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1 text-zinc-100 focus:outline-none"
+                      className="flex-1 px-3 py-1 bg-white border border-slate-200 rounded-xl text-slate-850 placeholder-slate-400 text-xs focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 transition-all"
                       placeholder="Add keyword tag (e.g. high-pay)"
                     />
-                    <button type="button" onClick={() => addTag('job')} className="bg-zinc-800 hover:bg-zinc-700 text-xs px-2.5 py-1 rounded">Tag</button>
+                    <button type="button" onClick={() => addTag('job')} className="bg-slate-200 hover:bg-slate-350 border border-slate-300/40 text-slate-700 text-xs px-3 py-1.5 rounded-xl font-semibold transition-colors">Tag</button>
                   </div>
                 </div>
 
                 {/* LinkedIn Recruiter & Company Page Details */}
                 {(jobForm.source?.toLowerCase().includes('linkedin') || jobForm.recruiterName || jobForm.recruiterUrl || jobForm.companyUrl) && (
-                  <div className="bg-zinc-900/50 p-2.5 rounded border border-zinc-800 space-y-2">
-                    <label className="block text-[9px] uppercase font-bold text-zinc-400">LinkedIn Intelligence</label>
+                  <div className="bg-white border border-slate-100 shadow-sm p-3 rounded-xl space-y-2">
+                    <label className="block text-[9px] uppercase font-bold text-slate-500">LinkedIn Intelligence</label>
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="block text-[8px] uppercase font-bold text-zinc-500 mb-0.5">Recruiter Name</label>
+                        <label className="block text-[8px] uppercase font-bold text-slate-450 mb-0.5">Recruiter Name</label>
                         <input
                           type="text"
                           value={jobForm.recruiterName || ''}
                           onChange={e => setJobForm(prev => ({ ...prev, recruiterName: e.target.value }))}
-                          className="w-full text-[11px] bg-zinc-950 border border-zinc-800 rounded px-2 py-1 text-zinc-200 focus:outline-none focus:border-zinc-700 animate-fadeIn"
+                          className="w-full text-[11px] bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-slate-800 focus:outline-none focus:border-brand-500 transition-all animate-fade-in"
                           placeholder="Hiring Manager / Recruiter"
                         />
                       </div>
                       <div>
-                        <label className="block text-[8px] uppercase font-bold text-zinc-500 mb-0.5">Recruiter Profile</label>
+                        <label className="block text-[8px] uppercase font-bold text-slate-450 mb-0.5">Recruiter Profile</label>
                         <input
                           type="text"
                           value={jobForm.recruiterUrl || ''}
                           onChange={e => setJobForm(prev => ({ ...prev, recruiterUrl: e.target.value }))}
-                          className="w-full text-[11px] bg-zinc-950 border border-zinc-800 rounded px-2 py-1 text-zinc-200 focus:outline-none focus:border-zinc-700"
+                          className="w-full text-[11px] bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-slate-800 focus:outline-none focus:border-brand-500 transition-all"
                           placeholder="https://linkedin.com/in/..."
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-[8px] uppercase font-bold text-zinc-500 mb-0.5">Company LinkedIn Page</label>
+                      <label className="block text-[8px] uppercase font-bold text-slate-450 mb-0.5">Company LinkedIn Page</label>
                       <input
                         type="text"
                         value={jobForm.companyUrl || ''}
                         onChange={e => setJobForm(prev => ({ ...prev, companyUrl: e.target.value }))}
-                        className="w-full text-[11px] bg-zinc-950 border border-zinc-800 rounded px-2 py-1 text-zinc-200 focus:outline-none focus:border-zinc-700"
+                        className="w-full text-[11px] bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-slate-800 focus:outline-none focus:border-brand-500 transition-all"
                         placeholder="https://linkedin.com/company/..."
                       />
                     </div>
@@ -673,11 +681,11 @@ export default function Popup() {
                 {/* Job Highlights */}
                 {(jobForm.source?.toLowerCase().includes('naukri') || jobForm.highlights) && (
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Job Highlights</label>
+                    <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Job Highlights</label>
                     <textarea
                       value={jobForm.highlights || ''}
                       onChange={e => setJobForm(prev => ({ ...prev, highlights: e.target.value }))}
-                      className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700 h-16 resize-none"
+                      className="input-field h-16 resize-none"
                       placeholder="Extracted key bullet points..."
                     />
                   </div>
@@ -685,91 +693,89 @@ export default function Popup() {
 
                 {/* Job Description Textarea */}
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Job Description</label>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Job Description</label>
                   <textarea
                     value={jobForm.description}
                     onChange={e => setJobForm(prev => ({ ...prev, description: e.target.value }))}
-                    className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700 h-24 resize-none"
+                    className="input-field h-24 resize-none"
                     placeholder="Full job description text..."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Notes</label>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Notes</label>
                   <textarea
                     value={jobForm.notes}
                     onChange={e => setJobForm(prev => ({ ...prev, notes: e.target.value }))}
-                    className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700 h-14 resize-none"
+                    className="input-field h-14 resize-none"
                     placeholder="Enter interview details or application pointers..."
                   />
                 </div>
               </div>
-            )}
-
-            {activeTab === 'company' && (
+            )}            {activeTab === 'company' && (
               <div className="space-y-3 flex-1">
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Company Name *</label>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Company Name *</label>
                   <input
                     type="text"
                     value={companyForm.name}
                     onChange={e => setCompanyForm(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700"
+                    className="input-field"
                     placeholder="Acme Corp"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Website</label>
+                    <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Website</label>
                     <input
                       type="text"
                       value={companyForm.website}
                       onChange={e => setCompanyForm(prev => ({ ...prev, website: e.target.value }))}
-                      className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700"
+                      className="input-field"
                       placeholder="https://acme.org"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">LinkedIn</label>
+                    <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">LinkedIn</label>
                     <input
                       type="text"
                       value={companyForm.linkedin}
                       onChange={e => setCompanyForm(prev => ({ ...prev, linkedin: e.target.value }))}
-                      className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700"
+                      className="input-field"
                       placeholder="https://linkedin.com/company/..."
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Industry</label>
+                    <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Industry</label>
                     <input
                       type="text"
                       value={companyForm.industry}
                       onChange={e => setCompanyForm(prev => ({ ...prev, industry: e.target.value }))}
-                      className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700"
+                      className="input-field"
                       placeholder="Enterprise SaaS"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Size</label>
+                    <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Size</label>
                     <input
                       type="text"
                       value={companyForm.size}
                       onChange={e => setCompanyForm(prev => ({ ...prev, size: e.target.value }))}
-                      className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700"
+                      className="input-field"
                       placeholder="50-200 employees"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Tags</label>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Tags</label>
                   <div className="flex flex-wrap gap-1 mb-1.5">
                     {companyForm.tags?.map(t => (
-                      <span key={t} className="bg-indigo-950/40 text-indigo-300 text-[10px] px-2 py-0.5 rounded border border-indigo-900/60 flex items-center gap-1">
+                      <span key={t} className="bg-brand-50 text-brand-600 text-[10px] px-2 py-0.5 rounded-lg border border-brand-100/50 flex items-center gap-1">
                         {t}
-                        <button type="button" onClick={() => removeTag('company', t)} className="hover:text-rose-400">×</button>
+                        <button type="button" onClick={() => removeTag('company', t)} className="hover:text-rose-600 font-bold">×</button>
                       </span>
                     ))}
                   </div>
@@ -779,19 +785,19 @@ export default function Popup() {
                       value={tagInput}
                       onChange={e => setTagInput(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addTag('company'); } }}
-                      className="flex-1 text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1 text-zinc-100 focus:outline-none"
+                      className="flex-1 px-3 py-1 bg-white border border-slate-200 rounded-xl text-slate-850 placeholder-slate-400 text-xs focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 transition-all"
                       placeholder="Add tag (e.g. startup)"
                     />
-                    <button type="button" onClick={() => addTag('company')} className="bg-zinc-800 hover:bg-zinc-700 text-xs px-2.5 py-1 rounded">Tag</button>
+                    <button type="button" onClick={() => addTag('company')} className="bg-slate-200 hover:bg-slate-300 border border-slate-300/40 text-slate-700 text-xs px-3 py-1.5 rounded-xl font-semibold transition-colors">Tag</button>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">About Company</label>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">About Company</label>
                   <textarea
                     value={companyForm.description}
                     onChange={e => setCompanyForm(prev => ({ ...prev, description: e.target.value }))}
-                    className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700 h-16 resize-none"
+                    className="input-field h-16 resize-none"
                     placeholder="Enter short company details..."
                   />
                 </div>
@@ -802,64 +808,64 @@ export default function Popup() {
               <div className="space-y-3 flex-1">
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Author Name *</label>
+                    <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Author Name *</label>
                     <input
                       type="text"
                       value={postForm.author}
                       onChange={e => setPostForm(prev => ({ ...prev, author: e.target.value }))}
-                      className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700"
+                      className="input-field"
                       placeholder="Jane Doe"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Company Guesstimate</label>
+                    <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Company Guesstimate</label>
                     <input
                       type="text"
                       value={postForm.company}
                       onChange={e => setPostForm(prev => ({ ...prev, company: e.target.value }))}
-                      className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700"
+                      className="input-field"
                       placeholder="Stripe"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Author Profile Link</label>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Author Profile Link</label>
                   <input
                     type="text"
                     value={postForm.authorProfile}
                     onChange={e => setPostForm(prev => ({ ...prev, authorProfile: e.target.value }))}
-                    className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700"
+                    className="input-field"
                     placeholder="https://linkedin.com/in/..."
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Post URL</label>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Post URL</label>
                   <input
                     type="text"
                     value={postForm.url}
                     onChange={e => setPostForm(prev => ({ ...prev, url: e.target.value }))}
-                    className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700"
+                    className="input-field"
                     placeholder="https://linkedin.com/feed/update/..."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Post Content *</label>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Post Content *</label>
                   <textarea
                     value={postForm.content}
                     onChange={e => setPostForm(prev => ({ ...prev, content: e.target.value }))}
-                    className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700 h-24 resize-none"
+                    className="input-field h-24 resize-none"
                     placeholder="Paste hiring text content here..."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Tags</label>
+                  <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Tags</label>
                   <div className="flex flex-wrap gap-1 mb-1.5">
                     {postForm.tags?.map(t => (
-                      <span key={t} className="bg-indigo-950/40 text-indigo-300 text-[10px] px-2 py-0.5 rounded border border-indigo-900/60 flex items-center gap-1">
+                      <span key={t} className="bg-brand-50 text-brand-600 text-[10px] px-2 py-0.5 rounded-lg border border-brand-100/50 flex items-center gap-1">
                         {t}
-                        <button type="button" onClick={() => removeTag('post', t)} className="hover:text-rose-400">×</button>
+                        <button type="button" onClick={() => removeTag('post', t)} className="hover:text-rose-600 font-bold">×</button>
                       </span>
                     ))}
                   </div>
@@ -869,10 +875,10 @@ export default function Popup() {
                       value={tagInput}
                       onChange={e => setTagInput(e.target.value)}
                       onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addTag('post'); } }}
-                      className="flex-1 text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1 text-zinc-100 focus:outline-none"
+                      className="flex-1 px-3 py-1 bg-white border border-slate-200 rounded-xl text-slate-850 placeholder-slate-400 text-xs focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/10 transition-all"
                       placeholder="Add tag"
                     />
-                    <button type="button" onClick={() => addTag('post')} className="bg-zinc-800 hover:bg-zinc-700 text-xs px-2.5 py-1 rounded">Tag</button>
+                    <button type="button" onClick={() => addTag('post')} className="bg-slate-200 hover:bg-slate-300 border border-slate-300/40 text-slate-700 text-xs px-3 py-1.5 rounded-xl font-semibold transition-colors">Tag</button>
                   </div>
                 </div>
               </div>
@@ -920,25 +926,20 @@ export default function Popup() {
                     value={recruiterForm.notes}
                     onChange={e => setRecruiterForm(prev => ({ ...prev, notes: e.target.value }))}
                     className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700 h-28 resize-none"
-                    placeholder="Sent DM on LinkedIn on 23rd June. Waiting for response..."
-                  />
-                </div>
-              </div>
             )}
-            */}
 
             {/* Settings Tab Form */}
             {activeTab === 'settings' && (
               <div className="space-y-4 flex-1 flex flex-col">
-                <div className="border-b border-zinc-800 pb-3">
-                  <h3 className="font-semibold text-xs text-white">Cloud Sync Configuration</h3>
-                  <p className="text-[10px] text-zinc-500 mt-1">Connect the extension to the Job Intelligence backend to synchronize your data automatically.</p>
+                <div className="border-b border-slate-100 pb-3">
+                  <h3 className="font-semibold text-xs text-slate-800">Cloud Sync Configuration</h3>
+                  <p className="text-[10px] text-slate-500 mt-1">Connect the extension to the Job Intelligence backend to synchronize your data automatically.</p>
                 </div>
 
                 <div className="space-y-3 flex-1">
                   {/* Backend URL */}
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-zinc-500 mb-1">Backend API URL</label>
+                    <label className="block text-[10px] uppercase font-bold text-slate-500 mb-1">Backend API URL</label>
                     <input
                       type="url"
                       value={syncSettings.baseUrl}
@@ -946,16 +947,16 @@ export default function Popup() {
                         const val = e.target.value;
                         setSyncSettingsState(prev => ({ ...prev, baseUrl: val }));
                       }}
-                      className="w-full text-xs bg-zinc-900 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none focus:border-zinc-700"
+                      className="input-field"
                       placeholder="http://localhost:5000/api"
                     />
                   </div>
 
                   {/* Sync Enabled Switch */}
-                  <div className="flex items-center justify-between p-2.5 bg-zinc-900 border border-zinc-800 rounded-lg">
+                  <div className="flex items-center justify-between p-2.5 bg-white border border-slate-200/60 rounded-xl shadow-sm">
                     <div>
-                      <span className="block text-xs font-semibold text-zinc-200">Auto Cloud Sync</span>
-                      <span className="block text-[10px] text-zinc-500">Enable automatic syncing on save.</span>
+                      <span className="block text-xs font-semibold text-slate-800">Auto Cloud Sync</span>
+                      <span className="block text-[10px] text-slate-500">Enable automatic syncing on save.</span>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input
@@ -973,18 +974,18 @@ export default function Popup() {
                         }}
                         className="sr-only peer"
                       />
-                      <div className="w-9 h-5 bg-zinc-850 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-zinc-400 after:border-zinc-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600 peer-checked:after:bg-white peer-checked:after:border-indigo-600"></div>
+                      <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-600 peer-checked:after:bg-white peer-checked:after:border-brand-600"></div>
                     </label>
                   </div>
 
                   {/* Auth status block */}
                   {syncSettings.token ? (
-                    <div className="p-3 bg-zinc-900/60 border border-zinc-800/80 rounded-lg space-y-3">
+                    <div className="p-3 bg-white border border-slate-200 rounded-xl space-y-3 shadow-sm">
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                        <span className="text-xs text-zinc-300 font-semibold">Authenticated Session</span>
+                        <span className="text-xs text-slate-700 font-semibold">Authenticated Session</span>
                       </div>
-                      <p className="text-[10px] text-zinc-500">Your extension is currently authorized to sync jobs and companies to the cloud.</p>
+                      <p className="text-[10px] text-slate-500">Your extension is currently authorized to sync jobs and companies to the cloud.</p>
                       
                       <button
                         type="button"
@@ -993,32 +994,32 @@ export default function Popup() {
                           await loadSettings();
                           showToast('Logged out of cloud sync.');
                         }}
-                        className="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-200 hover:text-white text-xs py-1.5 rounded transition-colors font-medium border border-zinc-700"
+                        className="w-full btn-secondary text-xs py-1.5 rounded-lg transition-colors font-semibold"
                       >
                         Disconnect Cloud
                       </button>
                     </div>
                   ) : (
-                    <div className="p-3 bg-zinc-900/40 border border-zinc-800 rounded-lg space-y-3">
-                      <span className="block text-[10px] uppercase font-bold text-zinc-400">Account Authorization</span>
+                    <div className="p-3 bg-white border border-slate-200 rounded-xl space-y-3 shadow-sm">
+                      <span className="block text-[10px] uppercase font-bold text-slate-550">Account Authorization</span>
                       
                       <div>
-                        <label className="block text-[9px] uppercase font-bold text-zinc-500 mb-0.5">Email Address</label>
+                        <label className="block text-[9px] uppercase font-bold text-slate-500 mb-0.5">Email Address</label>
                         <input
                           type="email"
                           value={settingsEmail}
                           onChange={e => setSettingsEmail(e.target.value)}
-                          className="w-full text-xs bg-zinc-950 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none"
+                          className="input-field"
                           placeholder="suraj@example.com"
                         />
                       </div>
                       <div>
-                        <label className="block text-[9px] uppercase font-bold text-zinc-500 mb-0.5">Password</label>
+                        <label className="block text-[9px] uppercase font-bold text-slate-500 mb-0.5">Password</label>
                         <input
                           type="password"
                           value={settingsPassword}
                           onChange={e => setSettingsPassword(e.target.value)}
-                          className="w-full text-xs bg-zinc-950 border border-zinc-800 rounded px-2.5 py-1.5 text-zinc-100 focus:outline-none"
+                          className="input-field"
                           placeholder="••••••••"
                         />
                       </div>
@@ -1048,7 +1049,7 @@ export default function Popup() {
                             setIsConnecting(false);
                           }
                         }}
-                        className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800/50 text-white text-xs py-2 rounded transition-colors font-medium flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-600/10"
+                        className="w-full btn-primary bg-gradient-to-r from-brand-600 to-brand-500 text-white text-xs py-2 rounded-xl transition-all font-semibold flex items-center justify-center gap-1.5 hover:from-brand-500 hover:to-brand-400 hover:shadow-md active:scale-95"
                       >
                         {isConnecting ? (
                           <>
@@ -1067,10 +1068,10 @@ export default function Popup() {
 
             {/* Save Button */}
             {activeTab !== 'settings' && (
-              <div className="pt-2 border-t border-zinc-800 mt-auto sticky bottom-0 bg-zinc-950">
+              <div className="pt-2 border-t border-slate-100 mt-auto sticky bottom-0 bg-slate-50">
                 <button
                   type="submit"
-                  className="w-full bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-medium text-xs py-2 rounded transition-colors shadow-lg shadow-indigo-600/20"
+                  className="w-full btn-primary bg-gradient-to-r from-brand-600 to-brand-500 text-white font-bold text-xs py-2 rounded-xl transition-all hover:from-brand-500 hover:to-brand-400 hover:shadow-md active:scale-95"
                 >
                   Save {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
                 </button>
